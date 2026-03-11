@@ -7,7 +7,7 @@ public class TheVault: MonoBehaviour
     public InputAction temp;
 
     private Dictionary<ResourceType,float> resourcesStored = new Dictionary<ResourceType,float>();
-    public Action<ResourceType, float> resourceValueChanged;
+    public Dictionary<ResourceType, Action<float>> resourceValueChanged = new Dictionary<ResourceType,Action<float>>();
 
     private void Start()
     {
@@ -30,13 +30,15 @@ public class TheVault: MonoBehaviour
     {
         if(!resourcesStored.ContainsKey(key)) return;
         resourcesStored[key] += increaseAmount;
-        resourceValueChanged?.Invoke(key, resourcesStored[key]);
+        resourceValueChanged[key]?.Invoke(resourcesStored[key]);
+        //resourceValueChanged?.Invoke(key, resourcesStored[key]);
     }
     public void SetResourceOfTypeToAmount(ResourceType key, float setAmount)
     {
         if (!resourcesStored.ContainsKey(key)) return;
         resourcesStored[key] = setAmount;
-        resourceValueChanged?.Invoke(key, resourcesStored[key]);
+        resourceValueChanged[key]?.Invoke(resourcesStored[key]);
+
     }
     public float GetResourceAmountOfType(ResourceType key)
     {

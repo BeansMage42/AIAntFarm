@@ -1656,6 +1656,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1885571954}
   - component: {fileID: 1885571953}
+  - component: {fileID: 1885571955}
   m_Layer: 0
   m_Name: TheVault
   m_TagString: Untagged
@@ -1699,6 +1700,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1885571955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885571952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dd17803b53df8347a7471311ca5f09f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeShop
+  upgradesSO:
+  - {fileID: 11400000, guid: dfd2f6f6bb7331d4ea69e3fb703d4707, type: 2}
+  - {fileID: 11400000, guid: 3b0c709428178a64186f4fb0c15841c4, type: 2}
+  upgrades: []
+  vault: {fileID: 0}
 --- !u!1 &1938518062
 GameObject:
   m_ObjectHideFlags: 0
