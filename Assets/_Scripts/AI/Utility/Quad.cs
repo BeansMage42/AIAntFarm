@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
-
+[Serializable]
 public class Quad
 {
     //Vector3 _center;
@@ -25,7 +27,7 @@ public class Quad
         children = new Quad[4];
         float length = _bounds.size.x/4;
         float height = _bounds.size.z/4;
-        Vector3 childSize = new Vector3(length, 0, height)*2;
+        Vector3 childSize = new Vector3(length, 5, height)*2;
         children[0] = new Quad(_generation + 1, this, new Bounds(_bounds.center + new Vector3(-length, 0, -height), childSize), _limit);
         children[1] = new Quad(_generation + 1, this, new Bounds(_bounds.center + new Vector3(length, 0, -height), childSize), _limit);
         children[2] = new Quad(_generation + 1, this, new Bounds(_bounds.center + new Vector3(length, 0, height), childSize), _limit);
@@ -66,27 +68,61 @@ public class Quad
     {
         if (_bounds.Contains(point))
         {
+            Debug.Log("contained point");
             if(children == null || children.Length == 0)
             {
                 q = this;
                 return true;
             }
+            Debug.Log("checking children");
             foreach(var child in children)
             {
                 if(child.QuadContainsPoint(point, out q))
                 {
+                    
                     return true;
                 }
             }
-            q = null;
-            return false;
+            q = this;
+            return true;
         }
         else
         {
+            Debug.Log("child did not contain");
             q = null;
             return false;
         }
 
+    }
+    public bool QuadIntersectsBounds(Bounds bounds, out Quad[] intersectingQuads)
+    {
+        List<Quad> list = new List<Quad>();
+        if (_bounds.Intersects(bounds))
+        {
+            Debug.Log("intersected");
+            if (children == null || children.Length == 0)
+            {
+                list.Add(this);
+                intersectingQuads = list.ToArray();
+                return true;
+            }
+            Debug.Log("checking children");
+            foreach (var child in children)
+            {
+                if (child.QuadIntersectsBounds(bounds, out Quad[] test))
+                {
+                    list.AddRange(test);
+                }
+            }
+            intersectingQuads = list.ToArray();
+            return true;
+        }
+        else
+        {
+            Debug.Log("child did not contain");
+            intersectingQuads = null;
+            return false;
+        }
     }
 
 }

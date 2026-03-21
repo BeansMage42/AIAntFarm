@@ -36,7 +36,7 @@ public partial class WanderAction : Action
         Vector3 toCenter = Vector3.zero - Self.Value.transform.position;
         toCenter.y = 0f;
         float centerWeight = Mathf.Clamp01(toCenter.magnitude/50f );
-        Debug.Log(centerWeight);
+        //Debug.Log(centerWeight);
         wanderDir = Vector3.Lerp(wanderDir.normalized, toCenter.normalized, centerWeight);
 
         Vector3 target = Self.Value.transform.position

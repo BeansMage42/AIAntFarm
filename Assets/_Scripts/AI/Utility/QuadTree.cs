@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class QuadTree
 {
+    [SerializeReference]
     public List<Quad> nodes = new List<Quad>();
     public int limit;
     public Bounds rootBounds;
@@ -27,8 +28,21 @@ public class QuadTree
 
     public bool TreeContainsPoint(Vector3 point, out Quad q)
     {
+        
         if (nodes[0].QuadContainsPoint(point, out q)) return true;
+        Debug.Log("root node did not contain");
         q = null;
         return false;
+    }
+    public bool TreeContainsBounds(Bounds bounds, out Quad[] intersectingQuads)
+    {
+        
+        if (nodes[0].QuadIntersectsBounds(bounds, out intersectingQuads)) return true;
+        return false;
+
+    }
+    public void ClearTree() 
+    {
+        nodes.Clear();
     }
 }
