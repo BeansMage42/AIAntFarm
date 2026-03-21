@@ -34,11 +34,11 @@ public struct ResourceStarter
 }
 public enum ResourceType
 {
-    Food,
-    Water,
-    Material,
-Genetics,
-Population,
-Entertainment,
-AvailableHousing
+    Food = 1,
+    Water = 2,
+    Material = 3,
+Genetics = 4,
+Population = 5,
+Entertainment = 6,
+AvailableHousing = 7
 }
