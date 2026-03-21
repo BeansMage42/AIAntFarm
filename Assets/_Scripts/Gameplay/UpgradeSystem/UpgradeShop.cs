@@ -1,38 +1,58 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 public class UpgradeShop : MonoBehaviour
 {
 
-    public UpgradeSO[] upgradesSO;
-    public List<Upgrade> upgrades = new List<Upgrade>();
-    public TheVault vault;
+    //public UpgradeSO[] upgradesSO;
+    //public Dictionary<string,Upgrade> upgrades = new Dictionary<string, Upgrade>();
+    // public List<Upgrade> Upgrades = new List<Upgrade>();
+   // [SerializeReference]
+    public List<Upgrade> Upgrades = new List<Upgrade>();
+
+    private List<Upgrade> RuntimeUpgradeList = new();
+    private Dictionary<Upgrade,Upgrade> RuntimeLookUp = new();
+    private TheVault vault;
+    public Action<string> UpgradePurchased;
+    [SerializeField] private GameObject upgradeButtonUIObject;
+    [SerializeField] private GameObject upgradeMenuUI;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        foreach (UpgradeSO upgrade in upgradesSO)
+        vault = TheVault.Instance;
+        foreach (var upgrade in Upgrades)
         {
-            Upgrade newUpgrade = new Upgrade(vault,upgrade.resourceTypeRequired);
-            newUpgrade.currentCost = upgrade.baseCost;
-            newUpgrade.baseCost = upgrade.baseCost;
-            newUpgrade.upgradeName = upgrade.upgradeName;
-            newUpgrade.isUnlocked = upgrade.defaultUnlocked;
-            newUpgrade.costIncreaseMod = upgrade.costIncreaseMod;
-            newUpgrade.amountIncrease = upgrade.amountIncrease;
-            newUpgrade.description = upgrade.description;
-            foreach (UpgradeSO prereq in upgrade.prerequisites)
-            {
-                newUpgrade.upgradePrerequisites.Add(prereq.name);
-            }
-            upgrades.Add(newUpgrade);
+            var clone = Instantiate(upgrade);
+            RuntimeUpgradeList.Add(clone);
+            //upgrade.InitializeUpgrade(vault);
+            RuntimeLookUp.Add(upgrade,clone);
 
         }
 
+        foreach (var upgrade in RuntimeUpgradeList)
+        {
+            List<Upgrade> remapped = new List<Upgrade>();
+            foreach (var prerequisit in upgrade.upgradePrerequisites)
+            {
+                if (RuntimeLookUp.TryGetValue(prerequisit, out Upgrade runtime))
+                {
+                    remapped.Add(runtime);
+                }
+            }
+            upgrade.upgradePrerequisites = remapped;
+            upgrade.InitializeUpgrade(vault);
+
+            GameObject newUIElement = Instantiate(upgradeButtonUIObject, upgradeMenuUI.transform);
+            UpgradeButton newButton = newUIElement.GetComponent<UpgradeButton>();
+            newButton.OnInitializeButton(upgrade);
+        }
+        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PurchaseUpgrade(Upgrade upgrade)
     {
-        
+
     }
 }
