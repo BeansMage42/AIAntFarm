@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UpgradeSO", menuName = "Scriptable Objects/TestUpgrade")]
+[CreateAssetMenu(fileName = "UpgradeSO", menuName = "Scriptable Objects/Upgrades/TestUpgrade")]
 [Serializable]
 public class TestUpgrade : Upgrade
 {
