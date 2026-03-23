@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.GameCenter;
@@ -11,12 +12,34 @@ public class QuadTreeManager : MonoBehaviour
     public Transform maxPos;
     public Transform minPos;
 
-    public Transform test;
+
+
+    public static QuadTreeManager Instance;
+
+    private List<QuadTreeObject> objects = new();
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            if(Instance != this)
+            {
+                Destroy(this);
+            }
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         GenerateTree();
-        
+        objects.AddRange( FindObjectsByType<QuadTreeObject>(FindObjectsInactive.Exclude,FindObjectsSortMode.None));
+        tree.objects = objects;
+        Debug.Log("found objects" +  objects.Count);    
+        tree.GenerateTree();
     }
     
     // Update is called once per frame
@@ -24,7 +47,7 @@ public class QuadTreeManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.H))
         {
-            if (TreeContainsPoint(test.transform.position, out Quad newQuad))
+            if (TreeContainsPoint(objects[0].transform.position, out Quad newQuad))
             {
                 Debug.Log("quad at: " + newQuad.GetNodeBounds().center + " contains point");
                 Debug.DrawLine(newQuad.GetNodeBounds().center, newQuad.GetNodeBounds().center + Vector3.up * 10, Color.green, 0.5f);
@@ -36,7 +59,7 @@ public class QuadTreeManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
-            if (TreeContainsBounds(test.gameObject.GetComponent<Collider>().bounds, out Quad[] newQuad))
+            if (TreeContainsBounds(objects[0].bounds, out Quad[] newQuad))
             {
                 foreach (Quad quad in newQuad)
                 {
@@ -76,6 +99,23 @@ public class QuadTreeManager : MonoBehaviour
 
     }
 
+    public void AddObjectToTree(QuadTreeObject quadTreeObject)
+    {
+        if(objects.Contains(quadTreeObject)) return;
+        objects.Add(quadTreeObject);
+        tree.objects = objects;
+        tree.ClearTree();
+        tree.GenerateTree();
+    }
+    public void RemoveObjectFromTree(QuadTreeObject quadTreeObject)
+    {
+        if (!objects.Contains(quadTreeObject)) return;
+        objects.Remove(quadTreeObject);
+        tree.objects = objects;
+        tree.ClearTree();
+        tree.GenerateTree();
+
+    }
     private void OnDrawGizmos()
     {
         if (tree != null)
@@ -86,16 +126,17 @@ public class QuadTreeManager : MonoBehaviour
                 {
 
                     Bounds nodeBounds = node.GetNodeBounds();
-                    /*                    Vector3 a = new Vector3(nodeBounds.min.x, nodeBounds.max.y, nodeBounds.max.z);
-                                        Vector3 b = new Vector3(nodeBounds.max.x, nodeBounds.max.y, nodeBounds.max.z);
-                                        Vector3 c = new Vector3(nodeBounds.max.x, nodeBounds.max.y, nodeBounds.min.z);
-                                        Vector3 d = new Vector3(nodeBounds.min.x, nodeBounds.max.y, nodeBounds.min.z);
-                                        Gizmos.DrawLine(a, b);
-                                        Gizmos.DrawLine(b, c);
-                                        Gizmos.DrawLine(c, d);
-                                        Gizmos.DrawLine(d, a);*/
-                   // Gizmos.color = new Color (1,0, (node._generation)/limit);
-                    Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size);
+                    if (node._scents.Count > 0) 
+                    {
+                        Gizmos.color = new Color(0, 0, node._scents.First().Value);
+                        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size + Vector3.up *2);
+
+                    }
+                    else
+                    {
+                        Gizmos.color =Color.white;
+                        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size);
+                    }
 
 
                 }

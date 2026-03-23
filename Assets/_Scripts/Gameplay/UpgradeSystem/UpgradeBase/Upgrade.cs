@@ -20,8 +20,10 @@ public abstract class Upgrade : ScriptableObject
     public Action<bool> UpgradeUnlockStateChange;
     public Action<bool> UpgradeAffordanceStateChange;
     public Action FirstLevelBought;
-    public void InitializeUpgrade(TheVault vault)
+    protected UpgradeShop shop;
+    public void InitializeUpgrade(TheVault vault, UpgradeShop newShop)
     {
+        this.shop = newShop;
         this.vault = vault;
         vault.resourceValueChanged[resourceTypeRequired] += EvaluateCost;
         foreach (Upgrade upgrade in upgradePrerequisites)
