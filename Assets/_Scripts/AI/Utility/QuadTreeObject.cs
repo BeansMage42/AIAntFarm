@@ -20,6 +20,7 @@ public abstract class QuadTreeObject:MonoBehaviour
 
     public virtual void OnPlace()
     {
+        bounds = GetComponent<Collider>().bounds;
         QuadTreeManager.Instance.AddObjectToTree(this);
     }
 }

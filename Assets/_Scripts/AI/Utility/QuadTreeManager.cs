@@ -87,6 +87,7 @@ public class QuadTreeManager : MonoBehaviour
     }
     public bool TreeContainsPoint(Vector3 point, out Quad foundQuad)
     {
+        if (tree == null) { foundQuad = null; return false; }
         point.y = tree.nodes[0].GetNodeBounds().center.y;
         Debug.Log("testing point" + point);
         foundQuad = null;
@@ -94,7 +95,8 @@ public class QuadTreeManager : MonoBehaviour
     }
     public bool TreeContainsBounds(Bounds bounds, out Quad[] intersectingQuads)
     {
-        if(tree.TreeContainsBounds(bounds, out intersectingQuads))return true;
+        if (tree == null) { intersectingQuads = null; return false; }
+        if (tree.TreeContainsBounds(bounds, out intersectingQuads))return true;
         return false;
 
     }
@@ -128,7 +130,7 @@ public class QuadTreeManager : MonoBehaviour
                     Bounds nodeBounds = node.GetNodeBounds();
                     if (node._scents.Count > 0) 
                     {
-                        Gizmos.color = new Color(0, 0, node._scents.First().Value);
+                        Gizmos.color = new Color(0, 0, node._scents.First().Value.Item2);
                         Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size + Vector3.up *2);
 
                     }

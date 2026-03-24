@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5645333309256893312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
+  m_Name: UniversalVariables
+  m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
+  VersionTimestamp: 639099007820932484
+  AssetID:
+    m_Value0: 3770745020139450506
+    m_Value1: 6849717764084493419
+  m_Blackboard:
+    m_Variables:
+    - rid: 6986751526547489297
+  m_SharedBlackboardVariableGuids:
+  - m_Value0: 2011059662048529605
+    m_Value1: 9601635317477263075
+  references:
+    version: 2
+    RefIds:
+    - rid: 6986751526547489297
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2011059662048529605
+          m_Value1: 9601635317477263075
+        Name: Home
+        m_Value: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd922ae02c94c87a66e46a10a7319b9, type: 3}
+  m_Name: UniversalVariables
+  m_EditorClassIdentifier: Unity.Behavior.Authoring::Unity.Behavior.BehaviorBlackboardAuthoringAsset
+  AssetID:
+    m_Value0: 3770745020139450506
+    m_Value1: 6849717764084493419
+  m_Variables:
+  - rid: 6986751526547489296
+  m_VersionTimestamp: 639099007820932484
+  m_CommandBuffer:
+    m_Commands: []
+  m_RuntimeBlackboardAsset: {fileID: -5645333309256893312}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6986751526547489296
+      type: {class: 'TypedVariableModel`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2011059662048529605
+          m_Value1: 9601635317477263075
+        Name: Home
+        IsExposed: 1
+        m_IsShared: 1
+        m_Value: {fileID: 0}

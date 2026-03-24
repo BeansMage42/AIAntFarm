@@ -73,37 +73,30 @@ public class UpgradeShop : MonoBehaviour
     {
         if (placingObject != null && isPlacingObject)
         {
-            /*placingObject.transform.position*/
-            /* Vector3 screenPos = Camera.main.ViewportToWorldPoint(Input.mousePosition);
-             screenPos = new Vector3(screenPos.x, mCam.transform.position.y, screenPos.y);
-             Debug.Log(screenPos);
-             RaycastHit test;
-             Debug.DrawLine(screenPos, screenPos + mCam.transform.forward * 50,Color.yellow,0.2f);
-             if (Physics.Raycast(screenPos, mCam.transform.forward, out test))
-             {
-                 placingObject.transform.position = test.point;
-             }
-             else
-             {
-
-             }*/
             Vector2 mousePos = Input.mousePosition;
-            Vector3 mouseToScreen = new Vector3(mousePos.x, mousePos.y, testDist /*Camera.main.nearClipPlane*/);
-            Vector3 screenPos = Camera.main.ScreenToWorldPoint(mouseToScreen);
-            Ray newRay = new Ray(screenPos, Vector3.down);
-            //placingObject.transform.position = screenPos;
-            //screenPos.z = 
-            // screenPos = new Vector3(screenPos.x, mCam.transform.position.y, screenPos.y);
-            //Debug.Log(screenPos);
+            Ray screenPos = Camera.main.ScreenPointToRay(mousePos);
             RaycastHit test;
-            Debug.DrawRay(newRay.origin, newRay.GetPoint(50), Color.yellow, 0.2f);
-            if (Physics.Raycast(newRay, out test, 20, groundLayer))
+            Debug.DrawRay(screenPos.origin, screenPos.origin + screenPos.direction *10, Color.yellow, 0.2f);
+            if (Physics.Raycast(screenPos, out test, 20, groundLayer))
             {
                 placingObject.transform.position = test.point;
             }
             else
             {
+                Plane plane = new Plane(Vector3.up,Vector3.zero + new Vector3(0,8,0));
 
+                float distance;
+                if(plane.Raycast(screenPos, out distance)){
+                    Vector3 point = screenPos.GetPoint(distance);
+                    placingObject.transform.position = point;
+                }
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                placingObject.GetComponent<QuadTreeObject>().OnPlace();
+                placingObject = null;
+                isPlacingObject = false;
             }
 
         }
