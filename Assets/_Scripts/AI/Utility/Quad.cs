@@ -83,9 +83,9 @@ public class Quad
     private float CalculateScentStrength(Resource go)
     {
         Vector3 objPos = go.bounds.center;
-        float strength = Vector3.Distance(this._bounds.center,objPos)/go.bounds.size.z;
+        float strength = 1 - (Vector3.Distance(this._bounds.center,objPos)/go.bounds.size.z);
         Strength = strength;
-      //  Debug.Log( "strength of resource " + go.resourceType + " is " + strength );
+        //Debug.Log( "strength of resource " + go.name + " is " + strength + " at distance " + Vector3.Distance(this._bounds.center, objPos));
         return strength;
     }
 
