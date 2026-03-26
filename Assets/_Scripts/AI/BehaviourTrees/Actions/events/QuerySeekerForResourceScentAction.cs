@@ -14,14 +14,14 @@ public partial class QuerySeekerForResourceScentAction : Action
     [SerializeReference] public BlackboardVariable<Resource> foundResource;
     protected override Status OnStart()
     {
-        (Resource,float) found = Seeker.Value.QueryTreeForScent(_Resource.Value);
+        //(Resource,float) found = Seeker.Value.QueryTreeForScent(_Resource.Value);
 
-        if(foundResource.Value != found.Item1)
+       /* if(foundResource.Value != found.Item1)
         {
             foundResource.Value = found.Item1;
         }
         strength.Value = found.Item2;
-
+*/
         return Status.Running;
     }
 

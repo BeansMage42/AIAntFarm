@@ -22,7 +22,11 @@ public class UpgradeShop : MonoBehaviour
     private bool isPlacingObject;
     [SerializeField] private GameObject mCam;
     [SerializeField] private LayerMask groundLayer;
-    public int testDist;
+
+    //SPAWNING
+
+    public Dictionary<GameObject,ObjectPool> placeAbleResourcePool = new();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -65,7 +69,11 @@ public class UpgradeShop : MonoBehaviour
     public void SpawnObjectToPlace(GameObject obj)
     {
         if (placingObject != null || isPlacingObject) return;
-        placingObject = Instantiate(obj);
+        if (!placeAbleResourcePool.ContainsKey(obj)) 
+        {
+            placeAbleResourcePool.Add(obj, new ObjectPool(obj, 20));
+        }
+        placingObject = placeAbleResourcePool[obj].Get();
         isPlacingObject = true;
 
     }

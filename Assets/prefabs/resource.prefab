@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3920701529859478043}
   - component: {fileID: 6136289911411774071}
   - component: {fileID: 2659242342577945476}
+  - component: {fileID: 778356730147500850}
   m_Layer: 0
   m_Name: resource
   m_TagString: Untagged
@@ -49,8 +50,10 @@ MonoBehaviour:
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+  poolable: {fileID: 0}
   resourceType: 1
   resourceRadius: 0.5
+  _floatAmountAvailable: 15
 --- !u!135 &2659242342577945476
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -72,6 +75,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2.2
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &778356730147500850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2500963092275779205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f25be0306d17464d9981178a2dfe0b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Poolable
 --- !u!1 &9009304530122361964
 GameObject:
   m_ObjectHideFlags: 0
