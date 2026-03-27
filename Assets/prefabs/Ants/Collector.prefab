@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 139822065208918868}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.86, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 3e73eb7c4a50358429b758fc098d2075, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,12 +99,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1189685733190617006}
-  - component: {fileID: 7228888238875283614}
   - component: {fileID: 3801489734584748638}
-  - component: {fileID: 180518896712040605}
-  - component: {fileID: 303567155181390156}
+  - component: {fileID: -3095505142212441677}
+  - component: {fileID: 4841383175693502304}
+  - component: {fileID: -2174783957108837710}
+  - component: {fileID: 2200213818109574095}
   m_Layer: 7
-  m_Name: Ant
+  m_Name: Collector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,28 +127,6 @@ Transform:
   - {fileID: 428194408586480971}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!195 &7228888238875283614
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1729255505359673307}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 1
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0.5
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!135 &3801489734584748638
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -169,7 +148,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &180518896712040605
+--- !u!114 &-3095505142212441677
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -178,17 +157,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1729255505359673307}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1d6059e58891c64a8f6f8dabad78067, type: 3}
+  m_Script: {fileID: 11500000, guid: ddbc46604d2f0bb4983c4016f006c82e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SeekerAnt
-  home: {fileID: 0}
-  _seekingResourceType: 0
-  _quadTreeManager: {fileID: 0}
-  _antBounds: {fileID: 3801489734584748638}
-  resourceStrengthBeforeFullPivot: 0.6
-  randomPositionSamplingDistance: 0
-  spawner: {fileID: 0}
---- !u!54 &303567155181390156
+  m_EditorClassIdentifier: Assembly-CSharp::Agent
+  Enabled: 1
+  neighbours: []
+  radius: 5
+  fovThreshold: 0
+  separationWeight: 2
+  cohesionWeight: 0.8
+  alignmentWeight: 2
+  lemmingWeight: 0.6
+  moveSpeed: 4
+  rotationSpeed: 5
+--- !u!54 &4841383175693502304
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,7 +193,41 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &-2174783957108837710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729255505359673307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f25be0306d17464d9981178a2dfe0b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Poolable
+--- !u!195 &2200213818109574095
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729255505359673307}
+  m_Enabled: 0
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

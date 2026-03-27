@@ -9,9 +9,13 @@ public class SeekerAnt:AntBase
     public Collider _antBounds;
 
 
-    public FSM_StateMachine seekerAntBehaviour;
+   
 
     public FSM_State WanderState;
+    private FSM_State SeekResourceState;
+    private FSM_State ReturnHomeState;
+    private FSM_State WaitForSpawnState;
+    private FSM_State GuideState;
 
     private Vector3 Target;
     private float resourceStrength;
@@ -20,27 +24,51 @@ public class SeekerAnt:AntBase
     private Vector3 wanderDir;
 
     [SerializeField] private float randomPositionSamplingDistance;
+
+    private bool groupSpawned;
+    [SerializeField] AntSpawner spawner;
     private void Awake()
     {
-      
+        spawner.AllAntsASpawned += () => { groupSpawned = true; };
     }
 
     protected override void Start()
     {
         base.Start();
         Debug.Log("doodleDee");
-        seekerAntBehaviour = new FSM_StateMachine();
+        AntBehaviour = new FSM_StateMachine();
 
-        WanderState = new FSM_State(WanderRandom, MoveToTarget, null);
-        WanderState.AddTransition(new FSM_Transition(WanderState, null, ReachedTarget ));
+        WanderState = new FSM_State(WanderRandom, MoveToTarget, () => { Debug.Log("on leave wander action"); });
+        WanderState.AddTransition(new FSM_Transition(WanderState, () => { Debug.Log("wander to wander transition"); }, ReachedTarget ));
 
-        seekerAntBehaviour.JumpToState(WanderState);
+        SeekResourceState = new FSM_State(QueryTreeForScent,MoveToTrackedResource, () => { Debug.Log("on leave seek action"); });
+        WanderState.AddTransition(new FSM_Transition(SeekResourceState, () => { Debug.Log("wander to seekResource state transition"); }, IsWithinProximityOfResource));
+
+        SeekResourceState.AddTransition(new FSM_Transition(WanderState, () => { Debug.Log("seek to wander transition"); }, () => { return !HasFoundResource(); }));
+       
+        ReturnHomeState = new FSM_State(GoHome,MoveToTarget, () => { Debug.Log("on exit return home state"); });
+        WaitForSpawnState = new FSM_State(SpawnAnts, GoHome, () => { Debug.Log("on exit wait state"); });
+        SeekResourceState.AddTransition(new FSM_Transition(ReturnHomeState, () => { Debug.Log("seek to return to home transition"); }, ReachedTarget));
+        ReturnHomeState.AddTransition(new FSM_Transition(WaitForSpawnState, () => { Debug.Log("home to wait transition"); }, ReachedTarget));
+
+
+        GuideState = new FSM_State(MoveToTrackedResource, MoveToTrackedResource, null);
+        WaitForSpawnState.AddTransition(new FSM_Transition(GuideState, () => { Debug.Log("Wait to guide transition"); }, GroupSpawned));
+
+        //ReturnHomeState.AddTransition
+
+
+        AntBehaviour.JumpToState(WanderState);
 
     }
 
     private void Update()
     {
-        seekerAntBehaviour.Update();
+        AntBehaviour.Update();
+    }
+    public void SpawnAnts()
+    {
+        spawner.SpawnAntsInNewGroupWithLeader(gameObject.transform);
     }
     public void QueryTreeForScent()
     {
@@ -64,21 +92,31 @@ public class SeekerAnt:AntBase
             }
             if (bestResource != null)
             {
+                Debug.Log("track new targfet");
                 resourceStrength = strongest;
                 BeginTrackingResource(bestResource);
             }
             else
             {
+                Debug.Log("lost target");
                 resourceStrength = 0.0f;
                 OnStopTrackingResource(trackResource);
             }
         }
+        else
+        {
+        Debug.Log("not even on the tree");
         resourceStrength = 0.0f;
         OnStopTrackingResource(trackResource);
 
+        }
+
     }
 
-
+    public bool GroupSpawned()
+    {
+        return groupSpawned;
+    }
     public bool HasFoundResource()
     {
         return (trackResource != null);
@@ -117,6 +155,15 @@ public class SeekerAnt:AntBase
             target = hit.position;
         }
         Target = target;
+    }
+    public void MoveToTrackedResource()
+    {
+        Target = trackResource.bounds.center;
+        MoveToTarget();
+    }
+    public void GoHome()
+    {
+        Target = home.transform.position;
     }
     public void MoveToTarget()
     {
