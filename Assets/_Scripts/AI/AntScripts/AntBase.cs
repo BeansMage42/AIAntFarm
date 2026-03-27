@@ -8,15 +8,16 @@ public abstract class AntBase : MonoBehaviour
 {
     //public BehaviorGraphAgent _antTree;
     public FSM_StateMachine AntBehaviour;
-    protected Resource trackResource;
+    public Resource trackResource;
     private Poolable poolable;
     protected NavMeshAgent Agent;
-    [SerializeField] protected GameObject home;
+    protected GameObject home;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
         Agent = GetComponent<NavMeshAgent>();
         poolable = GetComponent<Poolable>();
+        home = GameManager.instance.Home;
     }
 
     // Update is called once per frame

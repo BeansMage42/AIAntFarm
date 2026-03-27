@@ -38,22 +38,22 @@ public class SeekerAnt:AntBase
         Debug.Log("doodleDee");
         AntBehaviour = new FSM_StateMachine();
 
-        WanderState = new FSM_State(WanderRandom, MoveToTarget, () => { Debug.Log("on leave wander action"); });
-        WanderState.AddTransition(new FSM_Transition(WanderState, () => { Debug.Log("wander to wander transition"); }, ReachedTarget ));
+        WanderState = new FSM_State(WanderRandom, MoveToTarget,null /* () => { Debug.Log("on leave wander action"); }*/);
+        WanderState.AddTransition(new FSM_Transition(WanderState, null /*() => { Debug.Log("wander to wander transition"); }*/, ReachedTarget ));
 
-        SeekResourceState = new FSM_State(QueryTreeForScent,MoveToTrackedResource, () => { Debug.Log("on leave seek action"); });
-        WanderState.AddTransition(new FSM_Transition(SeekResourceState, () => { Debug.Log("wander to seekResource state transition"); }, IsWithinProximityOfResource));
+        SeekResourceState = new FSM_State(QueryTreeForScent,MoveToTrackedResource, null /*() => { Debug.Log("on leave seek action"); }*/);
+        WanderState.AddTransition(new FSM_Transition(SeekResourceState, null /*() => { Debug.Log("wander to seekResource state transition"); }*/, IsWithinProximityOfResource));
 
-        SeekResourceState.AddTransition(new FSM_Transition(WanderState, () => { Debug.Log("seek to wander transition"); }, () => { return !HasFoundResource(); }));
+        SeekResourceState.AddTransition(new FSM_Transition(WanderState,null /* () => { Debug.Log("seek to wander transition"); }*/, () => { return !HasFoundResource(); }));
        
-        ReturnHomeState = new FSM_State(GoHome,MoveToTarget, () => { Debug.Log("on exit return home state"); });
-        WaitForSpawnState = new FSM_State(SpawnAnts, GoHome, () => { Debug.Log("on exit wait state"); });
-        SeekResourceState.AddTransition(new FSM_Transition(ReturnHomeState, () => { Debug.Log("seek to return to home transition"); }, ReachedTarget));
-        ReturnHomeState.AddTransition(new FSM_Transition(WaitForSpawnState, () => { Debug.Log("home to wait transition"); }, ReachedTarget));
+        ReturnHomeState = new FSM_State(GoHome,MoveToTarget,null/* () => { Debug.Log("on exit return home state"); }*/);
+        WaitForSpawnState = new FSM_State(SpawnAnts, GoHome, null /*() => { Debug.Log("on exit wait state"); }*/);
+        SeekResourceState.AddTransition(new FSM_Transition(ReturnHomeState, null /*() => { Debug.Log("seek to return to home transition"); }*/, ReachedTarget));
+        ReturnHomeState.AddTransition(new FSM_Transition(WaitForSpawnState, null /*() => { Debug.Log("home to wait transition"); }*/, ReachedTarget));
 
 
         GuideState = new FSM_State(MoveToTrackedResource, MoveToTrackedResource, null);
-        WaitForSpawnState.AddTransition(new FSM_Transition(GuideState, () => { Debug.Log("Wait to guide transition"); }, GroupSpawned));
+        WaitForSpawnState.AddTransition(new FSM_Transition(GuideState, null /*() => { Debug.Log("Wait to guide transition"); }*/, GroupSpawned));
 
         //ReturnHomeState.AddTransition
 
