@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class AntSpawner : MonoBehaviour
 {
@@ -27,10 +28,17 @@ public class AntSpawner : MonoBehaviour
         for (int i = 0; i < AntsToSpawnInGroup; i++)
         {
             GameObject ant = AntPool.Get();//.transform.parent = newGroup.transform;
-            Vector3 random = UnityEngine.Random.insideUnitCircle * spawnRadius;
+            Vector3 random =  (UnityEngine.Random.insideUnitCircle * spawnRadius);
+            random += GameManager.instance.Home.transform.position;
             random.y = 8f;
+           // ant.transform.position = GameManager.instance.Home.transform.position + random;
+            if (NavMesh.SamplePosition(random, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+            {
+                random = hit.position;
+            }
             ant.transform.position = random;
             ant.transform.parent = newGroup.transform;
+            ant.GetComponent<CollectorAnt>().currentGroup = newGroup.GetComponent<Group>();
         }
         newGroup.GetComponent<Group>().InitializeGroup(leader);
         AllAntsASpawned?.Invoke();

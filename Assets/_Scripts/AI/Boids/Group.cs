@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,15 @@ public class Group : MonoBehaviour
     public Transform home;
     public Transform targetResource;
 
+    Resource resoure;
+
     List<Vector3> points = new List<Vector3>();
+
+    private Queue<Vector3> pointsQueue = new Queue<Vector3>();
+    private Queue<CollectorAnt> linedUpAnts = new Queue<CollectorAnt>();
+
+    public bool LineUpTime;
+
 
     // Start is called before the first frame update
     void Start()
@@ -54,46 +63,127 @@ public class Group : MonoBehaviour
         {
             Debug.DrawLine(point, point + Vector3.up * 5, Color.red, 2f);
         }
+        LineUp();
     }
     public void InitializeGroup(Transform Leader)
     {
+        linedUpAnts.Clear();
         fromHomeToResource = new NavMeshPath();
         fromResourceToHome = new NavMeshPath();
         home = GameManager.instance.Home.transform;
         agents.AddRange(GetComponentsInChildren<Agent>());
         leader = Leader;
+        int num = 1;
         foreach (Agent i in agents)
         {
             i.InitializeBoid(separationWeight,cohesionWeight,alignmentWeight,lemmingWeight,moveSpeed,rotationSpeed);
             i.SetLeader(leader);
+            i.gameObject.name = "ant " + num;
+            num++;
+            linedUpAnts.Enqueue(i.gameObject.GetComponent<CollectorAnt>());
         }
         GroupInitialized = true;
+        resoure = leader.GetComponent<AntBase>().trackResource;
         targetResource = leader.GetComponent<AntBase>().trackResource.transform;
+        resoure.OnDepleteResource += ResourceDepleted;
         CreatePaths();
     }
+    private void ResourceDepleted(Resource source)
+    {
 
+    }
     // Update is called once per frame
     void Update()
     {
         if (!GroupInitialized) return;
 
-        if(Input.GetKeyDown(KeyCode.P))LineUp();    
+        if(Input.GetKeyDown(KeyCode.P))StartLineUp();    
 
         if(leader == null)
         {
             leader = agents.First().transform;
         }
-        foreach (Agent i in agents)
+        if (!LineUpTime)
         {
-            if (i.Enabled)
-                i.CalculateMovement();
+            foreach (Agent i in agents)
+            {
+                if (i.Enabled)
+                    i.CalculateMovement();
+            }
+            foreach (Agent i in agents)
+            {
+                if (i.Enabled)
+                    i.UpdateMovement();
+            }
         }
-        foreach (Agent i in agents)
+        else
         {
-            if (i.Enabled)
-                i.UpdateMovement();
+            CollectorAnt antTemp = linedUpAnts.Peek();
+            Debug.DrawLine(antTemp.transform.position, antTemp.transform.position + Vector3.up *10, Color.yellow,0.5f);
+            if (antTemp.ReachedTarget())
+            {
+                if (!antTemp.IsCollecting)
+                {
+                    antTemp.ExtractResource();
+                }
+            }
         }
     }
+
+    public void StartLineUp()
+    {
+        if (LineUpTime) return;
+        Debug.Log("start line");
+        Debug.Log($" number of ants = {linedUpAnts.Count} number of points {pointsQueue.Count} ");
+        for (int i = 0; i < linedUpAnts.Count; i++) 
+        {
+            
+            Vector3 pointTemp = pointsQueue.Dequeue();
+            CollectorAnt antTemp = linedUpAnts.Dequeue();
+           
+            antTemp.ResourceFound(resoure, fromHomeToResource, fromResourceToHome);
+            antTemp.SwitchToNavmeshControl();
+            antTemp.MoveTo(pointTemp);
+            pointsQueue.Enqueue(pointTemp);
+            linedUpAnts.Enqueue(antTemp);
+            
+        }
+        linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
+        LineUpTime = true;
+    }
+    private void FirstInLineCollectedResource()
+    {
+        Debug.Log("first in line collected");
+        CollectorAnt antTemp = linedUpAnts.Dequeue();
+        antTemp.extractedResource -= FirstInLineCollectedResource;
+        antTemp.returnedHome += AddToLine;
+        for(int i = 0;i < linedUpAnts.Count; i++)
+        {
+            MoveUpLine();
+        }
+        linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
+    }
+    public void MoveUpLine()
+    {
+        
+        Vector3 pointTemp = pointsQueue.Dequeue();
+        CollectorAnt antTemp = linedUpAnts.Dequeue();
+        Debug.Log( antTemp.name + " move up line");
+        antTemp.MoveTo(pointTemp);
+        pointsQueue.Enqueue(pointTemp);
+        linedUpAnts.Enqueue(antTemp);
+    }
+    public void AddToLine(CollectorAnt ant)
+    {
+        Debug.Log($"add {ant.name} to line");
+        ant.returnedHome -= AddToLine;
+        Vector3 pointTemp = pointsQueue.Dequeue();
+        ant.MoveTo(pointTemp);
+        pointsQueue.Enqueue(pointTemp);
+        linedUpAnts.Enqueue(ant);
+
+    }
+
 
     public void ChangeGroupLeader(Transform newLeader)
     {
@@ -106,10 +196,10 @@ public class Group : MonoBehaviour
 
     public void LineUp()
     {
-        
+        if (pointsQueue.Count > 0) pointsQueue.Clear();
             float space = 0f;
-            float antSpacing = 2 + 0.1f;//twice radius + a bit of extra
-
+            float antSpacing = 2 + 0.2f;//twice radius + a bit of extra
+        space += 1;
         for(int i = 0; i < agents.Count; i++)
         {
             int lineIndex = fromHomeToResource.corners.Length - 1;
@@ -136,11 +226,16 @@ public class Group : MonoBehaviour
             else
             {
                 positionToPlace = fromHomeToResource.corners[0] + LineSegment.normalized * space;
+                if (NavMesh.SamplePosition(positionToPlace, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+                {
+                    positionToPlace = hit.position;
+                }
             }
             space += antSpacing;
-            points.Add(positionToPlace);
-           GameObject newObj = Instantiate(targetResource.gameObject,positionToPlace, Quaternion.identity);
-           newObj.name = "test " + i;
+            
+            pointsQueue.Enqueue(positionToPlace);
+           //GameObject newObj = Instantiate(targetResource.gameObject,positionToPlace, Quaternion.identity);
+          // newObj.name = "test " + i;
         }
         
     }
