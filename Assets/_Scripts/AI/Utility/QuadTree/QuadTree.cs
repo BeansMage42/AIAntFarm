@@ -14,13 +14,15 @@ public class QuadTree
     {
         limit = _l;
         rootBounds = _r;
-        AddRoot(rootBounds);
+        //AddRoot(rootBounds);
         //GenerateTree();
     }
     
     public void GenerateTree()
     {
         // nodes[0].Subdivide();
+        Debug.Log("generating tree");
+        AddRoot(rootBounds);
         foreach (var obj in objects)
         {
             nodes[0].AddObject(obj);
@@ -50,6 +52,7 @@ public class QuadTree
     
     public void ClearTree() 
     {
+        Debug.Log("clearing tree");
         nodes.Clear();
     }
 }

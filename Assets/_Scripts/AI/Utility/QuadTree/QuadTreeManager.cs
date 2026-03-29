@@ -17,6 +17,7 @@ public class QuadTreeManager : MonoBehaviour
     public static QuadTreeManager Instance;
 
     private List<QuadTreeObject> objects = new();
+    public bool ShowQuads = false;
     private void Awake()
     {
         if (Instance != null)
@@ -87,6 +88,7 @@ public class QuadTreeManager : MonoBehaviour
     }
     public bool TreeContainsPoint(Vector3 point, out Quad foundQuad)
     {
+        if (tree == null) { foundQuad = null; return false; }
         point.y = tree.nodes[0].GetNodeBounds().center.y;
         Debug.Log("testing point" + point);
         foundQuad = null;
@@ -94,7 +96,8 @@ public class QuadTreeManager : MonoBehaviour
     }
     public bool TreeContainsBounds(Bounds bounds, out Quad[] intersectingQuads)
     {
-        if(tree.TreeContainsBounds(bounds, out intersectingQuads))return true;
+        if (tree == null) { intersectingQuads = null; return false; }
+        if (tree.TreeContainsBounds(bounds, out intersectingQuads))return true;
         return false;
 
     }
@@ -118,27 +121,30 @@ public class QuadTreeManager : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        if (tree != null)
+        if (ShowQuads)
         {
-            if (tree.nodes.Count != 0)
+            if (tree != null)
             {
-                foreach (var node in tree.nodes)
+                if (tree.nodes.Count != 0)
                 {
-
-                    Bounds nodeBounds = node.GetNodeBounds();
-                    if (node._scents.Count > 0) 
+                    foreach (var node in tree.nodes)
                     {
-                        Gizmos.color = new Color(0, 0, node._scents.First().Value);
-                        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size + Vector3.up *2);
+
+                        Bounds nodeBounds = node.GetNodeBounds();
+                        if (node._scents.Count > 0)
+                        {
+                            Gizmos.color = new Color(0, 0, node._scents.First().Value.Item2);
+                            Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size + Vector3.up * 2);
+
+                        }
+                        else
+                        {
+                            Gizmos.color = Color.white;
+                            Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size);
+                        }
+
 
                     }
-                    else
-                    {
-                        Gizmos.color =Color.white;
-                        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size);
-                    }
-
-
                 }
             }
         }

@@ -14,8 +14,8 @@ public class Quad
     Quad _parent;
     Quad[] children = null;
     List<QuadTreeObject> containedObjects = new();
-    public Dictionary<Resource, float> _scents = new Dictionary<Resource, float>();
-
+    public Dictionary<ResourceType, (Resource,float)> _scents = new Dictionary<ResourceType,(Resource, float)>();
+    public float Strength;
     public Quad(int _g, Quad _par, Bounds _b, int _l)
     {
         _parent = _par;
@@ -35,14 +35,21 @@ public class Quad
         {
             if (go is Resource)
             {
-               // Debug.Log("is resource");
-
-                    if (!_scents.TryGetValue((Resource)go, out float found))
+               
+             // _scents.Add((go as Resource).resourceType, CalculateScentStrength((Resource)go));
+             float strength = CalculateScentStrength((Resource)go);
+                if(_scents.ContainsKey((go as Resource).resourceType))
+                {
+                    if (_scents[(go as Resource).resourceType].Item2 < strength)
                     {
-                       // Debug.Log("adding resource");
-                        _scents.Add((Resource)go, CalculateScentStrength((Resource)go));
-
+                        _scents[(go as Resource).resourceType] = ((Resource)go,strength);
                     }
+                }
+                else
+                {
+                    _scents[(go as Resource).resourceType] = ((Resource)go, strength);
+                }
+                    
                 
             }
             return; 
@@ -76,10 +83,13 @@ public class Quad
     private float CalculateScentStrength(Resource go)
     {
         Vector3 objPos = go.bounds.center;
-        float strength = Vector3.Distance(this._bounds.center,objPos)/go.resourceRadius;
-      //  Debug.Log( "strength of resource " + go.resourceType + " is " + strength );
+        float strength = 1 - (Vector3.Distance(this._bounds.center,objPos)/go.bounds.size.z);
+        Strength = strength;
+        //Debug.Log( "strength of resource " + go.name + " is " + strength + " at distance " + Vector3.Distance(this._bounds.center, objPos));
         return strength;
     }
+
+    
 
     public void Subdivide()
     {
@@ -184,5 +194,6 @@ public class Quad
             return false;
         }
     }
+
 
 }

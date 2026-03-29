@@ -10,11 +10,12 @@ using Unity.Properties;
 public partial class WanderAction : Action
 {
     [SerializeReference] public BlackboardVariable<NavMeshAgent> Agent;
-    [SerializeReference] public BlackboardVariable<int> Resource;
+    [SerializeReference] public BlackboardVariable<Resource> Resource;
     [SerializeReference] public BlackboardVariable<float> Distance;
     [SerializeReference] public BlackboardVariable<float> Radius;
     [SerializeReference] public BlackboardVariable<float> RotSpeed;
     [SerializeReference] public BlackboardVariable<GameObject> Self;
+    [SerializeReference] public BlackboardVariable<float> resourceStrength;
 
 
     Vector3 wanderDir;
@@ -38,6 +39,7 @@ public partial class WanderAction : Action
         float centerWeight = Mathf.Clamp01(toCenter.magnitude/50f );
         //Debug.Log(centerWeight);
         wanderDir = Vector3.Lerp(wanderDir.normalized, toCenter.normalized, centerWeight);
+        if(Resource.Value != null) wanderDir = Vector3.Lerp(wanderDir, (Resource.Value.transform.position - Self.Value.transform.position).normalized, resourceStrength.Value);
 
         Vector3 target = Self.Value.transform.position
                        + (wanderDir * Distance.Value); 
