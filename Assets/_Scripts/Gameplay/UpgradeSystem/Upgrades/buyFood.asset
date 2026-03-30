@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0c2a71f59d5aa64a9cd74b750dd17ea, type: 3}
-  m_Name: ItemTest
+  m_Name: buyFood
   m_EditorClassIdentifier: Assembly-CSharp::PurchaseItem
-  upgradeName: BuyTest
+  upgradeName: buy food
   description: 
   baseCost: 10
   costIncreaseMod: 0

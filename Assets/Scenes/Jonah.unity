@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraDrag
   movementSpeed: 20
-  rotateSpeed: 10
+  rotateSpeed: 0.5
   maxCamPos: {fileID: 1826920263}
   minCamPos: {fileID: 1049173769}
   maxCameraHeight: 30
@@ -4473,6 +4473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeShop
   Upgrades:
   - {fileID: 11400000, guid: 1792bfcf486333f49beabeff5ff2c810, type: 2}
+  - {fileID: 11400000, guid: bc3e7338c17140c48808db4ea0bec945, type: 2}
   upgradeButtonUIObject: {fileID: 3124368694074212041, guid: b0584135d701dc04b87972facc8a0929, type: 3}
   upgradeMenuUI: {fileID: 963765947}
   mCam: {fileID: 91173229}
