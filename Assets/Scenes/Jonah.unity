@@ -2089,7 +2089,7 @@ GameObject:
   - component: {fileID: 770729275}
   - component: {fileID: 770729274}
   - component: {fileID: 770729273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3142,9 +3142,9 @@ RectTransform:
   - {fileID: 1764451820}
   m_Father: {fileID: 406943813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -388, y: 154}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 68, y: -66}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1405126592
@@ -3166,8 +3166,8 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: -60
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
@@ -5012,6 +5012,10 @@ PrefabInstance:
     - target: {fileID: 1729255505359673307, guid: 94cf99dee20c9b34e9bddc4994ecbe97, type: 3}
       propertyPath: m_Name
       value: Ant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228888238875283614, guid: 94cf99dee20c9b34e9bddc4994ecbe97, type: 3}
+      propertyPath: avoidancePriority
+      value: 51
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

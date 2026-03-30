@@ -11,7 +11,7 @@ public class Resource : QuadTreeObject
     public Action<Resource> OnDepleteResource;
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) ExtractResource(10f, out float temp);
+       //. if (Input.GetKeyDown(KeyCode.Space)) ExtractResource(10f, out float temp);
     }
     public void ExtractResource(float amountToExtract, out float amountExtracted)
     {
@@ -19,6 +19,11 @@ public class Resource : QuadTreeObject
         {
             _floatAmountAvailable -= amountToExtract;
             amountExtracted = amountToExtract;
+            if (_floatAmountAvailable == 0)
+            {
+                OnDepleteResource?.Invoke(this);
+                DisableObject();
+            }
             //return amountToExtract;
         }
         else

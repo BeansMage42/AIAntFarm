@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,6 +17,7 @@ public class SeekerAnt:AntBase
     private FSM_State ReturnHomeState;
     private FSM_State WaitForSpawnState;
     private FSM_State GuideState;
+    private FSM_State MonitorState;
 
     private Vector3 Target;
     private float resourceStrength;
@@ -27,6 +29,7 @@ public class SeekerAnt:AntBase
 
     private bool groupSpawned;
     [SerializeField] AntSpawner spawner;
+    public Action ReturnedToResource;
     private void Awake()
     {
         spawner.AllAntsASpawned += () => { groupSpawned = true; };
@@ -54,7 +57,11 @@ public class SeekerAnt:AntBase
 
         GuideState = new FSM_State(MoveToTrackedResource, MoveToTrackedResource, null);// a state to guide the ants to a resource
         WaitForSpawnState.AddTransition(new FSM_Transition(GuideState, () => { Debug.Log("Wait to guide transition"); }, GroupSpawned));//switches from waiting to guiding once the ants are spawned
-
+        GuideState.AddTransition(new FSM_Transition(WanderState, null, () => { return !HasFoundResource(); }));
+        MonitorState = new FSM_State(null,null,null);
+        GuideState.AddTransition(new FSM_Transition(MonitorState, () => { ReturnedToResource?.Invoke(); }, ReachedTarget));
+        GuideState.AddTransition(new FSM_Transition(WanderState,null, () => { return !HasFoundResource(); }));
+        
         //ReturnHomeState.AddTransition
 
 
@@ -92,20 +99,20 @@ public class SeekerAnt:AntBase
             }
             if (bestResource != null)
             {
-                Debug.Log("track new targfet");
+             //   Debug.Log("track new targfet");
                 resourceStrength = strongest;
                 BeginTrackingResource(bestResource);
             }
             else
             {
-                Debug.Log("lost target");
+                //Debug.Log("lost target");
                 resourceStrength = 0.0f;
                 OnStopTrackingResource(trackResource);
             }
         }
         else
         {
-        Debug.Log("not even on the tree");
+        //Debug.Log("not even on the tree");
         resourceStrength = 0.0f;
         OnStopTrackingResource(trackResource);
 
@@ -167,7 +174,7 @@ public class SeekerAnt:AntBase
     }
     public void MoveToTarget()
     {
-        Debug.Log("set target");
+       // Debug.Log("set target");
         Agent.SetDestination(Target);
     }
 
