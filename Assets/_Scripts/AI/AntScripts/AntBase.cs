@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public abstract class AntBase : MonoBehaviour
 {
     //public BehaviorGraphAgent _antTree;
+    //[SerializeReference]
     public FSM_StateMachine AntBehaviour;
     public Resource trackResource;
     private Poolable poolable;

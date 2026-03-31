@@ -169,7 +169,7 @@ MonoBehaviour:
   cohesionWeight: 0.8
   alignmentWeight: 2
   lemmingWeight: 0.6
-  moveSpeed: 4
+  moveSpeed: 5
   rotationSpeed: 5
 --- !u!54 &4841383175693502304
 Rigidbody:
@@ -194,7 +194,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
@@ -248,5 +248,6 @@ MonoBehaviour:
   boidControl: {fileID: -3095505142212441677}
   currentGroup: {fileID: 0}
   carryingCapacity: 3
-  extractSpeed: 0.6
+  extractSpeed: 2
   IsCollecting: 0
+  extractionComplete: 0

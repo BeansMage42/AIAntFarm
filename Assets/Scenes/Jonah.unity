@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraDrag
   movementSpeed: 20
-  rotateSpeed: 10
+  rotateSpeed: 0.5
   maxCamPos: {fileID: 1826920263}
   minCamPos: {fileID: 1049173769}
   maxCameraHeight: 30
@@ -2089,7 +2089,7 @@ GameObject:
   - component: {fileID: 770729275}
   - component: {fileID: 770729274}
   - component: {fileID: 770729273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3142,9 +3142,9 @@ RectTransform:
   - {fileID: 1764451820}
   m_Father: {fileID: 406943813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -388, y: 154}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 68, y: -66}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1405126592
@@ -3166,8 +3166,8 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: -60
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
@@ -4473,6 +4473,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeShop
   Upgrades:
   - {fileID: 11400000, guid: 1792bfcf486333f49beabeff5ff2c810, type: 2}
+  - {fileID: 11400000, guid: bc3e7338c17140c48808db4ea0bec945, type: 2}
   upgradeButtonUIObject: {fileID: 3124368694074212041, guid: b0584135d701dc04b87972facc8a0929, type: 3}
   upgradeMenuUI: {fileID: 963765947}
   mCam: {fileID: 91173229}
@@ -5012,6 +5013,10 @@ PrefabInstance:
     - target: {fileID: 1729255505359673307, guid: 94cf99dee20c9b34e9bddc4994ecbe97, type: 3}
       propertyPath: m_Name
       value: Ant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228888238875283614, guid: 94cf99dee20c9b34e9bddc4994ecbe97, type: 3}
+      propertyPath: avoidancePriority
+      value: 51
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
+//[Serializable]
 public abstract class FSM_AbstractState
 {
     private List<FSM_Transition> transitions = new List<FSM_Transition>();
