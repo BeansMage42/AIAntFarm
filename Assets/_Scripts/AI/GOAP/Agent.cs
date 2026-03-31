@@ -27,17 +27,16 @@ namespace _Scripts.AI.GOAP
         bool invoked;
         public void CompleteAction() {
 
-            currentAction.isRunning = false;
+            currentAction.inProgress = false;
             currentAction.PostPerform();
             invoked = false;
         }
 
         void LateUpdate() {
         
-            if (currentAction != null && currentAction.isRunning) {
-            
-                float distanceToTarget = Vector3.Distance(currentAction.target.transform.position, this.transform.position);
-                if (currentAction.agent.hasPath && distanceToTarget < 2.0f) {
+            if (currentAction != null && currentAction.inProgress) {
+                
+                if (currentAction.AchievedGoal()) {
 
                     if (!invoked) {
                         Invoke("CompleteAction", currentAction.duration);
@@ -77,17 +76,7 @@ namespace _Scripts.AI.GOAP
                 currentAction = actionQueue.Dequeue();
 
                 if (currentAction.PrePerform()) {
-                
-                    if (currentAction.target == null && currentAction.targetTag != "") {
-
-                        currentAction.target = GameObject.FindWithTag(currentAction.targetTag);
-                    }
-
-                    if (currentAction.target != null) {
                     
-                        currentAction.isRunning = true;
-                        currentAction.agent.SetDestination(currentAction.target.transform.position);
-                    }
                 } else {
                 
                     actionQueue = null;

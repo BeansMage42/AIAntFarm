@@ -8,12 +8,9 @@ namespace _Scripts.AI.GOAP
     {
         public string actionName = "Action";
         public float cost = 1;
-        public GameObject target;
-        public string targetTag;
         public float duration = 0;
         public WorldState[] PreConditions;
         public WorldState[] PostConditions;
-        public NavMeshAgent agent;
 
         public Dictionary<string, int> dPreConditions;
         public Dictionary<string, int> dPostConditions;
@@ -22,7 +19,7 @@ namespace _Scripts.AI.GOAP
         public Locations location;
         public WorldStates beliefs;
     
-        public bool isRunning = false;
+        public bool inProgress = false;
 
         public BaseAction()
         {
@@ -32,8 +29,6 @@ namespace _Scripts.AI.GOAP
 
         public void Awake()
         {
-            agent = GetComponent<NavMeshAgent>();
-        
             if (PreConditions != null)
                 foreach (WorldState ws in PreConditions)
                 {
@@ -46,8 +41,8 @@ namespace _Scripts.AI.GOAP
                     dPostConditions.Add(ws.key, ws.value);
                 }
         
-            location = this.GetComponent<BaseAgent>().location;
-            beliefs = this.GetComponent<BaseAgent>().beliefs;
+            location = GetComponent<BaseAgent>().location;
+            beliefs = GetComponent<BaseAgent>().beliefs;
         }
 
         public bool IsAchievable()
@@ -66,5 +61,7 @@ namespace _Scripts.AI.GOAP
 
         public abstract bool PrePerform();
         public abstract bool PostPerform();
+        public abstract bool AchievedGoal();
+        
     }
 }

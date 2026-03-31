@@ -1180,6 +1180,145 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!1 &340492187
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 340492193}
+  - component: {fileID: 340492192}
+  - component: {fileID: 340492191}
+  - component: {fileID: 340492190}
+  - component: {fileID: 340492189}
+  - component: {fileID: 340492188}
+  m_Layer: 0
+  m_Name: Queen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &340492188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340492187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba41a496c452a64487aeb480b866b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReleaseSeeker
+  actionName: Action
+  cost: 1
+  duration: 0
+  PreConditions: []
+  PostConditions: []
+  agentBeliefs:
+    key: 
+    value: 0
+  location: {fileID: 0}
+  inProgress: 0
+--- !u!114 &340492189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340492187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5d527937ae71c14b872dafde03342dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReleaseCollectors
+  actionName: Action
+  cost: 1
+  duration: 0
+  PreConditions: []
+  PostConditions: []
+  agentBeliefs:
+    key: 
+    value: 0
+  location: {fileID: 0}
+  inProgress: 0
+--- !u!114 &340492190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340492187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: debeac1a1665d0643b5145473047d264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RecallAnts
+  actionName: Action
+  cost: 1
+  duration: 0
+  PreConditions: []
+  PostConditions: []
+  agentBeliefs:
+    key: 
+    value: 0
+  location: {fileID: 0}
+  inProgress: 0
+--- !u!114 &340492191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340492187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e83bdfa8c072c694d8640e67c60a35fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurchaseUpgrade
+  actionName: Action
+  cost: 1
+  duration: 0
+  PreConditions: []
+  PostConditions: []
+  agentBeliefs:
+    key: 
+    value: 0
+  location: {fileID: 0}
+  inProgress: 0
+--- !u!114 &340492192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340492187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c892fabc1ea0f2e4b88041596b31be59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Queen
+  actions: []
+  location: {fileID: 0}
+  currentAction: {fileID: 0}
+--- !u!4 &340492193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340492187}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.17728, y: 7.98, z: -1.35521}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &353953461
 GameObject:
   m_ObjectHideFlags: 0
@@ -5042,3 +5181,4 @@ SceneRoots:
   - {fileID: 310180659}
   - {fileID: 562540448}
   - {fileID: 770729276}
+  - {fileID: 340492193}

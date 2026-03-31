@@ -95,6 +95,9 @@ public class Group : MonoBehaviour
     private void ResourceDepleted(Resource source)
     {
         LineUpTime = false;
+        if (linedUpAnts.Count == 0)
+            return;
+        
         linedUpAnts.Peek().extractedResource -= FirstInLineCollectedResource;
     }
     // Update is called once per frame
@@ -166,6 +169,10 @@ public class Group : MonoBehaviour
             antsArray[i].SetTargetPosition(points[i]);
         }
         antTemp.returnedHome += AddToLine;
+        
+        if (linedUpAnts.Count == 0)
+            return;
+        
         linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
 
         linedUpAnts.Peek().SetFrontOfLine();

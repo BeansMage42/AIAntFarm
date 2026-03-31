@@ -47,12 +47,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Group
   radius: 5
   fovThreshold: 0.23
-  separationWeight: 2.6
-  cohesionWeight: 1.9
-  alignmentWeight: 0.7
-  lemmingWeight: 1
+  separationWeight: 2.23
+  cohesionWeight: 1.23
+  alignmentWeight: 0.89
+  lemmingWeight: 1.45
   moveSpeed: 4
   rotationSpeed: 2.58
+  home: {fileID: 0}
+  targetResource: {fileID: 0}
+  LineUpTime: 0
 --- !u!114 &2133394873605911147
 MonoBehaviour:
   m_ObjectHideFlags: 0
