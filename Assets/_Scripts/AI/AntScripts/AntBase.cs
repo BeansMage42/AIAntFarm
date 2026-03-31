@@ -20,6 +20,7 @@ public abstract class AntBase : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         poolable = GetComponent<Poolable>();
         home = GameManager.instance.Home;
+        
     }
 
     // Update is called once per frame
@@ -54,6 +55,8 @@ public abstract class AntBase : MonoBehaviour
     }
     protected virtual void ReturnAntToPool()
     {
+        Debug.Log("return to pool");
+        if(poolable.Pool == null) { poolable.Pool = new ObjectPool(gameObject, 0); poolable.Pool.ActivePool.Add(gameObject); }//temp solution
         poolable.Pool.ReturnToPool(gameObject);
     }
 }

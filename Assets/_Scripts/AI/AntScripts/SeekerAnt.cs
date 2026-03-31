@@ -17,7 +17,8 @@ public class SeekerAnt:AntBase
     private FSM_State ReturnHomeState;
     private FSM_State WaitForSpawnState;
     private FSM_State GuideState;
-    private FSM_State MonitorState;
+    private FSM_State ReturnToPoolState;
+    private FSM_State DoNothinState;
 
     private Vector3 Target;
     private float resourceStrength;
@@ -52,15 +53,18 @@ public class SeekerAnt:AntBase
         ReturnHomeState = new FSM_State(GoHome,MoveToTarget,null/* () => { Debug.Log("on exit return home state"); }*/); // returns home to inform colony after reaching the resource
         WaitForSpawnState = new FSM_State(SpawnAnts, GoHome, null /*() => { Debug.Log("on exit wait state"); }*/);//waits for a group of collectors to be spawned in and assigned to this agent
         SeekResourceState.AddTransition(new FSM_Transition(ReturnHomeState, null /*() => { Debug.Log("seek to return to home transition"); }*/, ReachedTarget)); // switches from seeking to home when it has arrived at a resource
-        ReturnHomeState.AddTransition(new FSM_Transition(WaitForSpawnState, null /*() => { Debug.Log("home to wait transition"); }*/, ReachedTarget));//switches to returning home
-
+        ReturnHomeState.AddTransition(new FSM_Transition(WaitForSpawnState, null /*() => { Debug.Log("home to wait transition"); }*/, () => { return ReachedTarget() && !groupSpawned; }));//switches to returning home
+        
 
         GuideState = new FSM_State(MoveToTrackedResource, MoveToTrackedResource, null);// a state to guide the ants to a resource
         WaitForSpawnState.AddTransition(new FSM_Transition(GuideState, () => { Debug.Log("Wait to guide transition"); }, GroupSpawned));//switches from waiting to guiding once the ants are spawned
         GuideState.AddTransition(new FSM_Transition(WanderState, null, () => { return !HasFoundResource(); }));
-        MonitorState = new FSM_State(null,null,null);
-        GuideState.AddTransition(new FSM_Transition(MonitorState, () => { ReturnedToResource?.Invoke(); }, ReachedTarget));
-        GuideState.AddTransition(new FSM_Transition(WanderState,null, () => { return !HasFoundResource(); }));
+        ReturnToPoolState = new FSM_State(ReturnAntToPool,null,null);
+        DoNothinState = new FSM_State(null,null,null);
+
+        ReturnHomeState.AddTransition(new FSM_Transition( ReturnToPoolState, null, () => { return ReachedTarget() && groupSpawned; }));
+        ReturnToPoolState.AddTransition(new FSM_Transition(DoNothinState,null,() => true));
+        GuideState.AddTransition(new FSM_Transition(ReturnHomeState, () => { ReturnedToResource?.Invoke(); }, ReachedTarget));
         
         //ReturnHomeState.AddTransition
 
@@ -71,6 +75,7 @@ public class SeekerAnt:AntBase
     public override void RecallAnt()
     {
         base.RecallAnt();
+        OnStopTrackingResource(trackResource);
         AntBehaviour.JumpToState(ReturnHomeState);
     }
 
