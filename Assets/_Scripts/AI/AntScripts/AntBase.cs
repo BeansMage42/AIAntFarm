@@ -23,6 +23,8 @@ public abstract class AntBase : MonoBehaviour
         
     }
 
+
+
     // Update is called once per frame
     void Update()
     {

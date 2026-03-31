@@ -6,9 +6,11 @@ public class AntSpawner : MonoBehaviour
 {
 
     [SerializeField] private GameObject AntToSpawn;
+    [SerializeField] private GameObject seekerAnt;
     [SerializeField] private GameObject GroupPrefab;
     ObjectPool groupPool;
-    ObjectPool AntPool;
+    ObjectPool collectorPool;
+    ObjectPool seekerPool;
 
     [SerializeField] private int AntsToSpawnInGroup;
     [SerializeField] private float spawnRadius;
@@ -18,8 +20,8 @@ public class AntSpawner : MonoBehaviour
     private void Start()
     {
         groupPool = new ObjectPool(GroupPrefab,5);
-        AntPool = new ObjectPool(AntToSpawn,AntsToSpawnInGroup);
-
+        collectorPool = new ObjectPool(AntToSpawn,AntsToSpawnInGroup);
+        seekerPool = new ObjectPool(seekerAnt, 5);
     }
     public void SpawnAntsInNewGroupWithLeader(Transform leader)
     {
@@ -27,7 +29,7 @@ public class AntSpawner : MonoBehaviour
         
         for (int i = 0; i < AntsToSpawnInGroup; i++)
         {
-            GameObject ant = AntPool.Get();//.transform.parent = newGroup.transform;
+            GameObject ant = collectorPool.Get();//.transform.parent = newGroup.transform;
             Vector3 random =  (UnityEngine.Random.insideUnitCircle * spawnRadius);
             random += GameManager.instance.Home.transform.position;
             random.y = 8f;
@@ -42,5 +44,12 @@ public class AntSpawner : MonoBehaviour
         }
         newGroup.GetComponent<Group>().InitializeGroup(leader);
         AllAntsASpawned?.Invoke();
+    }
+
+    public void SpawnSeeker(ResourceType type)
+    {
+        GameObject newSeeker = seekerPool.Get();
+        newSeeker.transform.position = GameManager.instance.Home.transform.position;
+        newSeeker.GetComponent<SeekerAnt>().InitializeAnt(type,this);
     }
 }

@@ -96,8 +96,8 @@ MonoBehaviour:
   _seekingResourceType: 0
   _quadTreeManager: {fileID: 0}
   _antBounds: {fileID: 3801489734584748638}
-  resourceStrengthBeforeFullPivot: 0.6
-  randomPositionSamplingDistance: 0
+  resourceStrengthBeforeFullPivot: 0.8
+  randomPositionSamplingDistance: 3
   spawner: {fileID: 0}
 --- !u!54 &303567155181390156
 Rigidbody:

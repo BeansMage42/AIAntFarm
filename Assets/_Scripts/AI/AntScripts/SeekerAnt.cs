@@ -29,48 +29,66 @@ public class SeekerAnt:AntBase
     [SerializeField] private float randomPositionSamplingDistance;
 
     private bool groupSpawned;
-    [SerializeField] AntSpawner spawner;
+    public AntSpawner spawner;
     public Action ReturnedToResource;
     private void Awake()
     {
-        spawner.AllAntsASpawned += () => { groupSpawned = true; };
+       // spawner.AllAntsASpawned += () => { groupSpawned = true; };
     }
 
     protected override void Start()
     {
         base.Start();
         Debug.Log("doodleDee");
+        
+        //ReturnHomeState.AddTransition
+        
+
+       
+
+    }
+    private void BuildFSM()
+    {
         AntBehaviour = new FSM_StateMachine();
 
-        WanderState = new FSM_State(WanderRandom, MoveToTarget,null /* () => { Debug.Log("on leave wander action"); }*/); //wanders randomly around, weighted by nearby resource
-        WanderState.AddTransition(new FSM_Transition(WanderState, null /*() => { Debug.Log("wander to wander transition"); }*/, ReachedTarget )); // loops wanderstate
+        WanderState = new FSM_State(WanderRandom, MoveToTarget, null /* () => { Debug.Log("on leave wander action"); }*/); //wanders randomly around, weighted by nearby resource
+        WanderState.AddTransition(new FSM_Transition(WanderState, null /*() => { Debug.Log("wander to wander transition"); }*/, ReachedTarget)); // loops wanderstate
 
-        SeekResourceState = new FSM_State(QueryTreeForScent,MoveToTrackedResource, null /*() => { Debug.Log("on leave seek action"); }*/); // moves directly towards nearest resource
+        SeekResourceState = new FSM_State(QueryTreeForScent, MoveToTrackedResource, null /*() => { Debug.Log("on leave seek action"); }*/); // moves directly towards nearest resource
         WanderState.AddTransition(new FSM_Transition(SeekResourceState, null /*() => { Debug.Log("wander to seekResource state transition"); }*/, IsWithinProximityOfResource)); //switches from wander to seek when close to a resource
 
-        SeekResourceState.AddTransition(new FSM_Transition(WanderState,null /* () => { Debug.Log("seek to wander transition"); }*/, () => { return !HasFoundResource(); }));// returns to wandering if the resource ever stops existing
-       
-        ReturnHomeState = new FSM_State(GoHome,MoveToTarget,null/* () => { Debug.Log("on exit return home state"); }*/); // returns home to inform colony after reaching the resource
+        SeekResourceState.AddTransition(new FSM_Transition(WanderState, null /* () => { Debug.Log("seek to wander transition"); }*/, () => { return !HasFoundResource(); }));// returns to wandering if the resource ever stops existing
+
+        ReturnHomeState = new FSM_State(GoHome, MoveToTarget, null/* () => { Debug.Log("on exit return home state"); }*/); // returns home to inform colony after reaching the resource
         WaitForSpawnState = new FSM_State(SpawnAnts, GoHome, null /*() => { Debug.Log("on exit wait state"); }*/);//waits for a group of collectors to be spawned in and assigned to this agent
         SeekResourceState.AddTransition(new FSM_Transition(ReturnHomeState, null /*() => { Debug.Log("seek to return to home transition"); }*/, ReachedTarget)); // switches from seeking to home when it has arrived at a resource
         ReturnHomeState.AddTransition(new FSM_Transition(WaitForSpawnState, null /*() => { Debug.Log("home to wait transition"); }*/, () => { return ReachedTarget() && !groupSpawned; }));//switches to returning home
-        
+
 
         GuideState = new FSM_State(MoveToTrackedResource, MoveToTrackedResource, null);// a state to guide the ants to a resource
         WaitForSpawnState.AddTransition(new FSM_Transition(GuideState, () => { Debug.Log("Wait to guide transition"); }, GroupSpawned));//switches from waiting to guiding once the ants are spawned
         GuideState.AddTransition(new FSM_Transition(WanderState, null, () => { return !HasFoundResource(); }));
-        ReturnToPoolState = new FSM_State(ReturnAntToPool,null,null);
-        DoNothinState = new FSM_State(null,null,null);
+        ReturnToPoolState = new FSM_State(ReturnAntToPool, null, null);
+        DoNothinState = new FSM_State(null, null, null);
 
-        ReturnHomeState.AddTransition(new FSM_Transition( ReturnToPoolState, null, () => { return ReachedTarget() && groupSpawned; }));
-        ReturnToPoolState.AddTransition(new FSM_Transition(DoNothinState,null,() => true));
+        ReturnHomeState.AddTransition(new FSM_Transition(ReturnToPoolState, null, () => { return ReachedTarget() && groupSpawned; }));
+        ReturnToPoolState.AddTransition(new FSM_Transition(DoNothinState, null, () => true));
         GuideState.AddTransition(new FSM_Transition(ReturnHomeState, () => { ReturnedToResource?.Invoke(); }, ReachedTarget));
         
-        //ReturnHomeState.AddTransition
 
-
+    }
+    public void InitializeAnt(ResourceType lookFor, AntSpawner span)
+    {
+        spawner = span;
+        spawner.AllAntsASpawned += GroupSpawnEvent;
+        _seekingResourceType = lookFor;
+        _quadTreeManager = QuadTreeManager.Instance;
+         if(AntBehaviour == null)BuildFSM();
         AntBehaviour.JumpToState(WanderState);
-
+    }
+    private void GroupSpawnEvent()
+    {
+         groupSpawned = true;
     }
     public override void RecallAnt()
     {
@@ -89,6 +107,7 @@ public class SeekerAnt:AntBase
     }
     public void QueryTreeForScent()
     {
+        if (_quadTreeManager == null) return;
         if (_quadTreeManager.TreeContainsBounds(_antBounds.bounds, out Quad[] searchForIntersections))
         {
             Resource bestResource = null;
@@ -147,6 +166,7 @@ public class SeekerAnt:AntBase
     }
     public void WanderRandom()
     {
+        Debug.Log("wander random");
         QueryTreeForScent();
         if (wanderDir == Vector3.zero)
             wanderDir = transform.forward;
@@ -211,6 +231,13 @@ public class SeekerAnt:AntBase
         resource.occupied = null;
         base.OnStopTrackingResource(resource);
         
+    }
+    protected override void ReturnAntToPool()
+    {
+        trackResource =null;
+        groupSpawned = false;
+
+        base.ReturnAntToPool();
     }
 
 }

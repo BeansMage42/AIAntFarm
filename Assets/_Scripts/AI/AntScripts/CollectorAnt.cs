@@ -33,6 +33,7 @@ public class CollectorAnt:AntBase
     protected override void Start()
     {
         base.Start();
+        if (AntBehaviour != null) return;
         AntBehaviour = new FSM_StateMachine();
         boidControl = GetComponent<Agent>();
         BoidState = new FSM_State(null, null, null);
@@ -58,6 +59,7 @@ public class CollectorAnt:AntBase
        
 
         AntBehaviour.JumpToState(BoidState);
+        Debug.Log("reset");
     }
     public override void RecallAnt()
     {
@@ -201,6 +203,27 @@ public class CollectorAnt:AntBase
     public bool CompletedPath()
     {
         return pathIndex >= ToHomefromResource.corners.Length-1;
+    }
+    protected override void ReturnAntToPool()
+    {
+        Agent.ResetPath();
+        Agent.enabled = false;
+        AntBehaviour.JumpToState(BoidState);
+        Agent.stoppingDistance = 0.2f;
+        currentGroup = null;
+        carried = (ResourceType.Food, 0f);
+        queueMode = false;
+        boidControl.Enabled = true;
+        FirstInLine = false;
+        IsCollecting = false;
+        extractionComplete = false;
+        WasRecalled = false;
+        OnStopTrackingResource(trackResource);
+        pathIndex = 0;
+        toResourceFromHome = null;
+        ToHomefromResource = null;
+        targetPos = Vector3.zero;
+        base.ReturnAntToPool();
     }
     
 }

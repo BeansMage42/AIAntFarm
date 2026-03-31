@@ -26,7 +26,7 @@ public class UpgradeShop : MonoBehaviour
     //SPAWNING
 
     public Dictionary<GameObject,ObjectPool> placeAbleResourcePool = new();
-
+    public AntSpawner spawner;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -102,6 +102,7 @@ public class UpgradeShop : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                spawner.SpawnSeeker(placingObject.GetComponent<Resource>().resourceType);
                 placingObject.GetComponent<QuadTreeObject>().OnPlace();
                 placingObject = null;
                 isPlacingObject = false;
