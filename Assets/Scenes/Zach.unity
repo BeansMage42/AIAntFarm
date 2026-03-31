@@ -2025,7 +2025,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AntSpawner
   AntToSpawn: {fileID: 1729255505359673307, guid: 5677921986d9f7847872e2cc390c356c, type: 3}
   GroupPrefab: {fileID: 8183172362108933418, guid: 65108aef4e2170c4aa5b8b1d5fb9545a, type: 3}
-  AntsToSpawnInGroup: 10
+  AntsToSpawnInGroup: 5
   spawnRadius: 1
 --- !u!4 &562540448
 Transform:
