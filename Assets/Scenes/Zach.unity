@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraDrag
   movementSpeed: 20
-  rotateSpeed: 10
+  rotateSpeed: 0.8
   maxCamPos: {fileID: 1826920263}
   minCamPos: {fileID: 1049173769}
   maxCameraHeight: 30
@@ -2228,7 +2228,7 @@ GameObject:
   - component: {fileID: 770729275}
   - component: {fileID: 770729274}
   - component: {fileID: 770729273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
