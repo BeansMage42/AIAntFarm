@@ -46,7 +46,7 @@ public class CameraDrag : MonoBehaviour
             Vector3 currentMousePos = Input.mousePosition;
             Vector3 screenMovement = Camera.main.ScreenToViewportPoint(currentMousePos) - Camera.main.ScreenToViewportPoint(startMousePos);
                 Vector3 remap = pivotPoint.rotation* new Vector3(-screenMovement.x, 0, -screenMovement.y) * movementSpeed ;
-                Debug.Log(remap);
+             //   Debug.Log(remap);
 
                 Vector3 newPos = startPos - remap;
                 newPos.z = Mathf.Clamp(newPos.z, minCamPos.position.z, maxCamPos.position.z);
@@ -73,7 +73,7 @@ public class CameraDrag : MonoBehaviour
     public void OnRotate(InputAction.CallbackContext callback)
     {
         rotateDir = callback.ReadValue<float>();
-        Debug.Log("rotationChanging : " + rotateDir);
+      //  Debug.Log("rotationChanging : " + rotateDir);
     }
   
 

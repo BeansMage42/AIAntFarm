@@ -9,9 +9,10 @@ public class Resource : QuadTreeObject
     public float resourceRadius;
     public float _floatAmountAvailable;
     public Action<Resource> OnDepleteResource;
+    public AntBase occupied;
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) ExtractResource(10f, out float temp);
+       //. if (Input.GetKeyDown(KeyCode.Space)) ExtractResource(10f, out float temp);
     }
     public void ExtractResource(float amountToExtract, out float amountExtracted)
     {
@@ -19,6 +20,11 @@ public class Resource : QuadTreeObject
         {
             _floatAmountAvailable -= amountToExtract;
             amountExtracted = amountToExtract;
+            if (_floatAmountAvailable == 0)
+            {
+                OnDepleteResource?.Invoke(this);
+                DisableObject();
+            }
             //return amountToExtract;
         }
         else

@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,6 @@ public class Group : MonoBehaviour
 
     List<Vector3> points = new List<Vector3>();
 
-    private Queue<Vector3> pointsQueue = new Queue<Vector3>();
     private Queue<CollectorAnt> linedUpAnts = new Queue<CollectorAnt>();
 
     public bool LineUpTime;
@@ -49,9 +49,10 @@ public class Group : MonoBehaviour
         Vector3 fromTO = targetResource.position - home.position;
         Vector2 normal = new Vector2(-fromTO.z, fromTO.x).normalized ;
         Vector3 offset = new Vector3(normal.x, 0, normal.y);
-        if (NavMesh.CalculatePath(targetResource.position + offset, home.position + offset, NavMesh.AllAreas, fromResourceToHome)) Debug.Log("found path to resource");
         if (NavMesh.CalculatePath(home.position - offset, targetResource.position - offset, NavMesh.AllAreas, fromHomeToResource)) Debug.Log("found path to home");
 
+        LineUp();
+        if (NavMesh.CalculatePath(targetResource.position + offset, home.position + offset, NavMesh.AllAreas, fromResourceToHome)) Debug.Log("found path to resource");
         Debug.Log("toresource length " + fromHomeToResource.corners.Length);
         Debug.Log("tohome length " + fromResourceToHome.corners.Length);
 
@@ -63,7 +64,6 @@ public class Group : MonoBehaviour
         {
             Debug.DrawLine(point, point + Vector3.up * 5, Color.red, 2f);
         }
-        LineUp();
     }
     public void InitializeGroup(Transform Leader)
     {
@@ -73,6 +73,11 @@ public class Group : MonoBehaviour
         home = GameManager.instance.Home.transform;
         agents.AddRange(GetComponentsInChildren<Agent>());
         leader = Leader;
+        leader.GetComponent<SeekerAnt>().ReturnedToResource += StartLineUp;
+        resoure = leader.GetComponent<AntBase>().trackResource;
+        targetResource = leader.GetComponent<AntBase>().trackResource.transform;
+        resoure.OnDepleteResource += ResourceDepleted;
+        CreatePaths();
         int num = 1;
         foreach (Agent i in agents)
         {
@@ -80,17 +85,21 @@ public class Group : MonoBehaviour
             i.SetLeader(leader);
             i.gameObject.name = "ant " + num;
             num++;
-            linedUpAnts.Enqueue(i.gameObject.GetComponent<CollectorAnt>());
+            CollectorAnt ant = i.gameObject.GetComponent<CollectorAnt>();
+            ant.ResourceFound(resoure, fromHomeToResource, fromResourceToHome);
+            //linedUpAnts.Enqueue(ant);
         }
         GroupInitialized = true;
-        resoure = leader.GetComponent<AntBase>().trackResource;
-        targetResource = leader.GetComponent<AntBase>().trackResource.transform;
-        resoure.OnDepleteResource += ResourceDepleted;
-        CreatePaths();
+        
     }
     private void ResourceDepleted(Resource source)
     {
-
+        LineUpTime = false;
+        //if (linedUpAnts.Count == 0)
+            //return;
+        resoure.OnDepleteResource -= ResourceDepleted;
+        linedUpAnts.Peek().extractedResource -= FirstInLineCollectedResource;
+        linedUpAnts.Clear();
     }
     // Update is called once per frame
     void Update()
@@ -116,39 +125,56 @@ public class Group : MonoBehaviour
                     i.UpdateMovement();
             }
         }
-        else
+       /* else
         {
             CollectorAnt antTemp = linedUpAnts.Peek();
             Debug.DrawLine(antTemp.transform.position, antTemp.transform.position + Vector3.up *10, Color.yellow,0.5f);
-            if (antTemp.ReachedTarget())
+            if (!antTemp.IsCollecting)
             {
-                if (!antTemp.IsCollecting)
+                if ( antTemp.ReachedTarget())
                 {
                     antTemp.ExtractResource();
                 }
             }
-        }
+        }*/
     }
 
     public void StartLineUp()
     {
         if (LineUpTime) return;
-        Debug.Log("start line");
-        Debug.Log($" number of ants = {linedUpAnts.Count} number of points {pointsQueue.Count} ");
-        for (int i = 0; i < linedUpAnts.Count; i++) 
+        List<Agent> agentsTemp = agents;
+        foreach(Vector3 point in points)
         {
-            
-            Vector3 pointTemp = pointsQueue.Dequeue();
-            CollectorAnt antTemp = linedUpAnts.Dequeue();
-           
-            antTemp.ResourceFound(resoure, fromHomeToResource, fromResourceToHome);
-            antTemp.SwitchToNavmeshControl();
-            antTemp.MoveTo(pointTemp);
-            pointsQueue.Enqueue(pointTemp);
-            linedUpAnts.Enqueue(antTemp);
-            
+            Agent bestFit = null;
+            float dist = float.MaxValue;
+            foreach(Agent i in agentsTemp)
+            {
+                if(Vector3.Distance(point, i.transform.position) < dist)
+                {
+                    bestFit = i;
+                    dist = Vector3.Distance(point, i.transform.position);
+                }
+            }
+            if (bestFit != null) 
+            {
+                linedUpAnts.Enqueue(bestFit.GetComponent<CollectorAnt>());
+                agents.Remove(bestFit);
+            }
+        }
+        leader.GetComponent<SeekerAnt>().ReturnedToResource -= StartLineUp;
+        Debug.Log("start line");
+        Debug.Log($" number of ants = {linedUpAnts.Count} number of points {points.Count} ");
+       
+       int index = 0;
+       foreach(CollectorAnt i in linedUpAnts)
+        {
+            i.SetTargetPosition(points[index]);
+            i.SwitchToNavmeshControl();
+           // i.MoveTo(points[index]);
+            index++;
         }
         linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
+        linedUpAnts.Peek().SetFrontOfLine();
         LineUpTime = true;
     }
     private void FirstInLineCollectedResource()
@@ -157,29 +183,28 @@ public class Group : MonoBehaviour
         CollectorAnt antTemp = linedUpAnts.Dequeue();
         antTemp.extractedResource -= FirstInLineCollectedResource;
         antTemp.returnedHome += AddToLine;
-        for(int i = 0;i < linedUpAnts.Count; i++)
+        CollectorAnt[] antsArray = linedUpAnts.ToArray(); // snapshot of the queue
+        for (int i = 0; i < antsArray.Length && i < points.Count; i++)
         {
-            MoveUpLine();
+            antsArray[i].SetTargetPosition(points[i]);
         }
-        linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
-    }
-    public void MoveUpLine()
-    {
+        antTemp.returnedHome += AddToLine;
         
-        Vector3 pointTemp = pointsQueue.Dequeue();
-        CollectorAnt antTemp = linedUpAnts.Dequeue();
-        Debug.Log( antTemp.name + " move up line");
-        antTemp.MoveTo(pointTemp);
-        pointsQueue.Enqueue(pointTemp);
-        linedUpAnts.Enqueue(antTemp);
+        //if (linedUpAnts.Count == 0)
+            //return;
+        
+        linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
+
+        linedUpAnts.Peek().SetFrontOfLine();
     }
+   
     public void AddToLine(CollectorAnt ant)
     {
         Debug.Log($"add {ant.name} to line");
         ant.returnedHome -= AddToLine;
-        Vector3 pointTemp = pointsQueue.Dequeue();
-        ant.MoveTo(pointTemp);
-        pointsQueue.Enqueue(pointTemp);
+        Vector3 pointTemp = points.Last();
+        //ant.MoveTo(pointTemp);
+        ant.SetTargetPosition(pointTemp);
         linedUpAnts.Enqueue(ant);
 
     }
@@ -196,7 +221,7 @@ public class Group : MonoBehaviour
 
     public void LineUp()
     {
-        if (pointsQueue.Count > 0) pointsQueue.Clear();
+        if (points.Count > 0) points.Clear();
             float space = 0f;
             float antSpacing = 2 + 0.2f;//twice radius + a bit of extra
         space += 1;
@@ -230,12 +255,13 @@ public class Group : MonoBehaviour
                 {
                     positionToPlace = hit.position;
                 }
+                else
+                {
+                    positionToPlace = fromHomeToResource.corners[0] + LineSegment.normalized;
+                }
             }
             space += antSpacing;
-            
-            pointsQueue.Enqueue(positionToPlace);
-           //GameObject newObj = Instantiate(targetResource.gameObject,positionToPlace, Quaternion.identity);
-          // newObj.name = "test " + i;
+            points.Add(positionToPlace);
         }
         
     }

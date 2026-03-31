@@ -1,7 +1,10 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
-
+//[Serializable]
 public class FSM_StateMachine : FSM_AbstractState
 {
+    
     public FSM_AbstractState CurrentState { get; private set; } = null;
 
     public void JumpToState(FSM_AbstractState newState)
@@ -36,6 +39,7 @@ public class FSM_StateMachine : FSM_AbstractState
             CurrentState.OnExitState();
             nextTransition.ExecuteTransition();
             CurrentState = nextTransition.NextState;
+            //Debug.Log("new state " + CurrentState.ToString()) ;
         }
         CurrentState.Update();
     }

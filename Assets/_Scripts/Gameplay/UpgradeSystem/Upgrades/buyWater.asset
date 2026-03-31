@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0c2a71f59d5aa64a9cd74b750dd17ea, type: 3}
+  m_Name: buyWater
+  m_EditorClassIdentifier: Assembly-CSharp::PurchaseItem
+  upgradeName: Buy water
+  description: 
+  baseCost: 10
+  costIncreaseMod: 0
+  amountIncrease: 0
+  currentCost: 10
+  isUnlocked: 1
+  canAfford: 1
+  level: 1
+  upgradePrerequisites: []
+  resourceTypeRequired: 3
+  vault: {fileID: 0}
+  _objectToPurchase: {fileID: 2500963092275779205, guid: c2110ae62cda3634f8fe04da8b5e17f9, type: 3}
