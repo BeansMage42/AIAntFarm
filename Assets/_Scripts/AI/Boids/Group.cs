@@ -95,8 +95,8 @@ public class Group : MonoBehaviour
     private void ResourceDepleted(Resource source)
     {
         LineUpTime = false;
-        if (linedUpAnts.Count == 0)
-            return;
+        //if (linedUpAnts.Count == 0)
+            //return;
         
         linedUpAnts.Peek().extractedResource -= FirstInLineCollectedResource;
     }
@@ -170,8 +170,8 @@ public class Group : MonoBehaviour
         }
         antTemp.returnedHome += AddToLine;
         
-        if (linedUpAnts.Count == 0)
-            return;
+        //if (linedUpAnts.Count == 0)
+            //return;
         
         linedUpAnts.Peek().extractedResource += FirstInLineCollectedResource;
 

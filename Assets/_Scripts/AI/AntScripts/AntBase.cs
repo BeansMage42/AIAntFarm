@@ -13,18 +13,24 @@ public abstract class AntBase : MonoBehaviour
     private Poolable poolable;
     protected NavMeshAgent Agent;
     protected GameObject home;
+    protected bool WasRecalled;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
         Agent = GetComponent<NavMeshAgent>();
         poolable = GetComponent<Poolable>();
         home = GameManager.instance.Home;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+    public virtual void RecallAnt()
+    {
+        OnStopTrackingResource(trackResource);
     }
 
     protected virtual void ResourceDepleted(Resource source)
@@ -49,6 +55,8 @@ public abstract class AntBase : MonoBehaviour
     }
     protected virtual void ReturnAntToPool()
     {
+        Debug.Log("return to pool");
+        if(poolable.Pool == null) { poolable.Pool = new ObjectPool(gameObject, 0); poolable.Pool.ActivePool.Add(gameObject); }//temp solution
         poolable.Pool.ReturnToPool(gameObject);
     }
 }

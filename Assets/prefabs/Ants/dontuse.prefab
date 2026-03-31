@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 3801489734584748638}
   - component: {fileID: 180518896712040605}
   m_Layer: 7
-  m_Name: Seeker
+  m_Name: dontuse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d6059e58891c64a8f6f8dabad78067, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SeekerAnt
-  home: {fileID: 0}
+  trackResource: {fileID: 0}
   _seekingResourceType: 0
   _quadTreeManager: {fileID: 0}
   _antBounds: {fileID: 3801489734584748638}

@@ -55,6 +55,7 @@ public class CollectorAnt:AntBase
      //   ReturnHomeState.AddTransition(new FSM_Transition(DepositResourceState, () => { Debug.Log("enter deposit state"); pathIndex = 0; }, ReachedTarget));
        // ReturnHomeWithResourceState.AddTransition(new FSM_Transition(DepositResourceState,null, ReachedTarget));
         DepositResourceState.AddTransition(new FSM_Transition(WaitState, null, () => { return HasFoundResource(); }));
+        ReturnHomeState.AddTransition(new FSM_Transition(DepositResourceState, null, () => { return ReachedTarget() && FinishedCollecting(); }));
 
       //  ExtractResourceState.AddTransition(new FSM_Transition(ReturnHomeState,null, () => { return !HasFoundResource(); }));
        // ReturnHomeState.AddTransition(new FSM_Transition(DepositResourceState, null, IsCarrying));
@@ -63,7 +64,11 @@ public class CollectorAnt:AntBase
 
         AntBehaviour.JumpToState(BoidState);
     }
-
+    public override void RecallAnt()
+    {
+        base.RecallAnt();
+        AntBehaviour.JumpToState(ReturnHomeState);
+    }
     public void ResourceFound(Resource source,  NavMeshPath toResource, NavMeshPath fromResource)
     {
        // toResourceFromHome = toResource;
@@ -140,14 +145,16 @@ public class CollectorAnt:AntBase
             carried.Item2 = 0;
           //  ReturnAntToPool();
         }
-       // returnedHome?.Invoke(this);
+        extractionComplete = false;
+        // returnedHome?.Invoke(this);
     }
     protected override void ResourceDepleted(Resource source)
     {
         base.ResourceDepleted(source);
         IsCollecting = false;
-        extractionComplete = false;
-        ReturnHome();
+        
+       // ReturnHome();
+       AntBehaviour.JumpToState(ReturnHomeState);
         //Agent.SetDestination(home.transform.position);
     }
 
