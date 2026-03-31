@@ -16,7 +16,6 @@ namespace _Scripts.AI.GOAP
         public Dictionary<string, int> dPostConditions;
     
         public WorldState agentBeliefs;
-        public Locations location;
         public WorldStates beliefs;
     
         public bool inProgress = false;
@@ -40,8 +39,7 @@ namespace _Scripts.AI.GOAP
                 {
                     dPostConditions.Add(ws.key, ws.value);
                 }
-        
-            location = GetComponent<BaseAgent>().location;
+            
             beliefs = GetComponent<BaseAgent>().beliefs;
         }
 
