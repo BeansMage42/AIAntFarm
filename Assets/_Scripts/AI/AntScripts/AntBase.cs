@@ -13,6 +13,7 @@ public abstract class AntBase : MonoBehaviour
     private Poolable poolable;
     protected NavMeshAgent Agent;
     protected GameObject home;
+    protected bool WasRecalled;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
@@ -25,6 +26,10 @@ public abstract class AntBase : MonoBehaviour
     void Update()
     {
         
+    }
+    public virtual void RecallAnt()
+    {
+        OnStopTrackingResource(trackResource);
     }
 
     protected virtual void ResourceDepleted(Resource source)

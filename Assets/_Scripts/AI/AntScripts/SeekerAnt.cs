@@ -68,6 +68,11 @@ public class SeekerAnt:AntBase
         AntBehaviour.JumpToState(WanderState);
 
     }
+    public override void RecallAnt()
+    {
+        base.RecallAnt();
+        AntBehaviour.JumpToState(ReturnHomeState);
+    }
 
     private void Update()
     {
@@ -85,10 +90,12 @@ public class SeekerAnt:AntBase
             float strongest = -float.MaxValue;
             foreach (var quad in searchForIntersections)
             {
+                
                 foreach (var scent in quad._scents.Keys)
                 {
                     if (scent == _seekingResourceType)
                     {
+                        if (quad._scents[scent].Item1.occupied != null && quad._scents[scent].Item1.occupied != this) continue;
                         if (quad._scents[scent].Item2 > strongest)
                         {
                             bestResource = quad._scents[scent].Item1;
@@ -190,11 +197,15 @@ public class SeekerAnt:AntBase
     }
     protected override void BeginTrackingResource(Resource resource)
     {
+        resource.occupied = this;
         base.BeginTrackingResource(resource);
     }
     protected override void OnStopTrackingResource(Resource resource) 
     {
+        if(resource == null) return;
+        resource.occupied = null;
         base.OnStopTrackingResource(resource);
+        
     }
 
 }

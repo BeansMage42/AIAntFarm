@@ -63,7 +63,11 @@ public class CollectorAnt:AntBase
 
         AntBehaviour.JumpToState(BoidState);
     }
-
+    public override void RecallAnt()
+    {
+        base.RecallAnt();
+        AntBehaviour.JumpToState(ReturnHomeState);
+    }
     public void ResourceFound(Resource source,  NavMeshPath toResource, NavMeshPath fromResource)
     {
        // toResourceFromHome = toResource;

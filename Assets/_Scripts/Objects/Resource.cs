@@ -9,6 +9,7 @@ public class Resource : QuadTreeObject
     public float resourceRadius;
     public float _floatAmountAvailable;
     public Action<Resource> OnDepleteResource;
+    public AntBase occupied;
     private void Update()
     {
        //. if (Input.GetKeyDown(KeyCode.Space)) ExtractResource(10f, out float temp);
