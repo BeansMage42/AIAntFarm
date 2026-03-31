@@ -41,32 +41,31 @@ public class CollectorAnt:AntBase
         FollowPathState = new FSM_State(FollowPathHome, FollowPathHome, null);
         // ReturnHomeWithResourceState = new FSM_State(FollowPathHome, null, SetFrontOfLine);
         DepositResourceState = new FSM_State(ReturnedHome, null, null);
-        ReturnHomeState = new FSM_State(ReturnHome, MoveTo, null);
+        ReturnHomeState = new FSM_State(ReturnHome, () => { Debug.Log("return home"); if (WasRecalled && ReachedTarget()) { Debug.Log("return to pool check in state");WasRecalled = false; ReturnAntToPool(); } else { Debug.Log($"was recalled:{WasRecalled} Reached Target:{ReachedTarget()} Distance left: {Agent.remainingDistance} has path{Agent.hasPath}"); MoveTo(); }  }, null);
 
         BoidState.AddTransition(new FSM_Transition(WaitState, null, NavMeshState));
 
         WaitState.AddTransition(new FSM_Transition(ExtractResourceState, null, () => { return IsFirstInLine() && ReachedTarget(); }));
         WaitState.AddTransition(new FSM_Transition(ReturnHomeState, null, () => { return !HasFoundResource(); }));
 
-        //ExtractResourceState.AddTransition(new FSM_Transition(ReturnHomeWithResourceState, null, IsCarrying));
         ExtractResourceState.AddTransition(new FSM_Transition(FollowPathState, null, FinishedCollecting));
-        //FollowPathState.AddTransition(new FSM_Transition(FollowPathState,null ,() => { return !CompletedPath(); }));
-        FollowPathState.AddTransition(new FSM_Transition(DepositResourceState, null, () => {return ReachedTarget() && CompletedPath(); }));
-     //   ReturnHomeState.AddTransition(new FSM_Transition(DepositResourceState, () => { Debug.Log("enter deposit state"); pathIndex = 0; }, ReachedTarget));
-       // ReturnHomeWithResourceState.AddTransition(new FSM_Transition(DepositResourceState,null, ReachedTarget));
+        FollowPathState.AddTransition(new FSM_Transition(ReturnHomeState, ReturnHome, () => {return ReachedTarget() && CompletedPath(); }));
+        DepositResourceState.AddTransition(new FSM_Transition(BoidState,() => { Debug.Log("go to pool"); ReturnAntToPool();  }, () => WasRecalled));
         DepositResourceState.AddTransition(new FSM_Transition(WaitState, null, () => { return HasFoundResource(); }));
+        //ReturnHomeState.AddTransition(new FSM_Transition(BoidState, /*() => { Debug.Log("go to pool"); ReturnAntToPool();  }*/null, () => { return ReachedTarget() && WasRecalled; }));
         ReturnHomeState.AddTransition(new FSM_Transition(DepositResourceState, null, () => { return ReachedTarget() && FinishedCollecting(); }));
-
-      //  ExtractResourceState.AddTransition(new FSM_Transition(ReturnHomeState,null, () => { return !HasFoundResource(); }));
-       // ReturnHomeState.AddTransition(new FSM_Transition(DepositResourceState, null, IsCarrying));
-
-        //ExtractResourceState.AddTransition()
+        ReturnHomeState.AddTransition(new FSM_Transition(BoidState, () => { Debug.Log("return transition to pool"); ReturnAntToPool(); }, ReachedTarget));
+       
 
         AntBehaviour.JumpToState(BoidState);
     }
     public override void RecallAnt()
     {
         base.RecallAnt();
+        WasRecalled = true;
+        //if (AntBehaviour.CurrentState == FollowPathState) return;
+        IsCollecting = false;
+        
         AntBehaviour.JumpToState(ReturnHomeState);
     }
     public void ResourceFound(Resource source,  NavMeshPath toResource, NavMeshPath fromResource)
@@ -116,7 +115,7 @@ public class CollectorAnt:AntBase
     }
     private void SendExtractResourceEvent()
     {
-        extractionComplete = false;
+        //extractionComplete = false;
         extractedResource?.Invoke();
     }
     public bool FinishedCollecting()
@@ -129,6 +128,7 @@ public class CollectorAnt:AntBase
     }
     public void MoveTo()
     {
+
         Agent.SetDestination(targetPos);
     }
     public bool ReachedTarget()
@@ -143,17 +143,19 @@ public class CollectorAnt:AntBase
         {
             TheVault.Instance.ChangeResourceAmountOfType(carried.Item1, carried.Item2);
             carried.Item2 = 0;
-          //  ReturnAntToPool();
+            extractionComplete = false;
+            ReturnAntToPool();
+        //returnedHome?.Invoke(this);
         }
         extractionComplete = false;
-        // returnedHome?.Invoke(this);
     }
     protected override void ResourceDepleted(Resource source)
     {
         base.ResourceDepleted(source);
         IsCollecting = false;
-        
-       // ReturnHome();
+
+        // ReturnHome();
+       // WasRecalled = true;
        AntBehaviour.JumpToState(ReturnHomeState);
         //Agent.SetDestination(home.transform.position);
     }
@@ -183,6 +185,8 @@ public class CollectorAnt:AntBase
     }
     public void ReturnHome()
     {
+        //WasRecalled = true;
+        Agent.stoppingDistance += 0.5f;
         targetPos = home.transform.position;
     }
     int pathIndex = 0;
@@ -196,7 +200,7 @@ public class CollectorAnt:AntBase
     }
     public bool CompletedPath()
     {
-        return pathIndex >= ToHomefromResource.corners.Length -1;
+        return pathIndex >= ToHomefromResource.corners.Length-1;
     }
     
 }

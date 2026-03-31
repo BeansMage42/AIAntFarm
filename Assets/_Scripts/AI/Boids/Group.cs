@@ -87,7 +87,7 @@ public class Group : MonoBehaviour
             num++;
             CollectorAnt ant = i.gameObject.GetComponent<CollectorAnt>();
             ant.ResourceFound(resoure, fromHomeToResource, fromResourceToHome);
-            linedUpAnts.Enqueue(ant);
+            //linedUpAnts.Enqueue(ant);
         }
         GroupInitialized = true;
         
@@ -97,8 +97,9 @@ public class Group : MonoBehaviour
         LineUpTime = false;
         //if (linedUpAnts.Count == 0)
             //return;
-        
+        resoure.OnDepleteResource -= ResourceDepleted;
         linedUpAnts.Peek().extractedResource -= FirstInLineCollectedResource;
+        linedUpAnts.Clear();
     }
     // Update is called once per frame
     void Update()
@@ -141,6 +142,25 @@ public class Group : MonoBehaviour
     public void StartLineUp()
     {
         if (LineUpTime) return;
+        List<Agent> agentsTemp = agents;
+        foreach(Vector3 point in points)
+        {
+            Agent bestFit = null;
+            float dist = float.MaxValue;
+            foreach(Agent i in agentsTemp)
+            {
+                if(Vector3.Distance(point, i.transform.position) < dist)
+                {
+                    bestFit = i;
+                    dist = Vector3.Distance(point, i.transform.position);
+                }
+            }
+            if (bestFit != null) 
+            {
+                linedUpAnts.Enqueue(bestFit.GetComponent<CollectorAnt>());
+                agents.Remove(bestFit);
+            }
+        }
         leader.GetComponent<SeekerAnt>().ReturnedToResource -= StartLineUp;
         Debug.Log("start line");
         Debug.Log($" number of ants = {linedUpAnts.Count} number of points {points.Count} ");
