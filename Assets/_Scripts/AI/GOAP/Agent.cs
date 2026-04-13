@@ -8,7 +8,6 @@ namespace _Scripts.AI.GOAP
     
         public List<BaseAction> actions = new ();
         public Dictionary<SubGoal, int> goals = new ();
-        public Locations location = new();
         public WorldStates beliefs = new ();
         public float UpdateDelay = 5f;
     
