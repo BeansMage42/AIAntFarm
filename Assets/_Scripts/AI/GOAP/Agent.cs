@@ -10,11 +10,13 @@ namespace _Scripts.AI.GOAP
         public Dictionary<SubGoal, int> goals = new ();
         public Locations location = new();
         public WorldStates beliefs = new ();
+        public float UpdateDelay = 5f;
     
         Planner planner;
         Queue<BaseAction> actionQueue;
         public BaseAction currentAction;
         SubGoal currentGoal;
+        private float timer;
     
         public void Start() {
 
@@ -29,10 +31,21 @@ namespace _Scripts.AI.GOAP
 
             currentAction.inProgress = false;
             currentAction.PostPerform();
+            currentAction = null;
             invoked = false;
         }
 
-        void LateUpdate() {
+        void Update()
+        {
+            timer += Time.deltaTime;
+            if (timer > UpdateDelay)
+            {
+                timer = 0;
+                DailyUpdate();
+                print("Hell9");
+            }
+        }
+        void DailyUpdate() {
         
             if (currentAction != null && currentAction.inProgress) {
                 

@@ -102,7 +102,7 @@ public class UpgradeShop : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                spawner.SpawnSeeker(placingObject.GetComponent<Resource>().resourceType);
+                //spawner.SpawnSeeker(placingObject.GetComponent<Resource>().resourceType);
                 placingObject.GetComponent<QuadTreeObject>().OnPlace();
                 placingObject = null;
                 isPlacingObject = false;

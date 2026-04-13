@@ -1,3 +1,4 @@
+using System;
 using _Scripts.AI.GOAP;
 using UnityEngine;
 
@@ -5,16 +6,18 @@ public class ReleaseCollectors : BaseAction
 {
     public override bool PrePerform()
     {
-        throw new System.NotImplementedException();
+        World.Instance.SpawnSeeker();
+        return true;
     }
 
     public override bool PostPerform()
     {
-        throw new System.NotImplementedException();
+        World.Instance.SpawnSeeker();
+        return true;
     }
 
     public override bool AchievedGoal()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 }

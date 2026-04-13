@@ -1,20 +1,23 @@
 using _Scripts.AI.GOAP;
+using UnityEditor;
 using UnityEngine;
 
 public class ReleaseSeeker : BaseAction
 {
     public override bool PrePerform()
     {
-        throw new System.NotImplementedException();
+        World.Instance.SpawnSeeker();
+        this.inProgress = true;
+        return true;
     }
 
     public override bool PostPerform()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 
     public override bool AchievedGoal()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 }

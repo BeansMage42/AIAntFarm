@@ -8,6 +8,9 @@ public class Queen : BaseAgent
     {
         base.Start();
         
+        SubGoal s1 = new SubGoal("GetFood", 1, false);
+        goals.Add(s1, 3);
+        
     }
 
 }

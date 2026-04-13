@@ -1193,7 +1193,6 @@ GameObject:
   - component: {fileID: 340492192}
   - component: {fileID: 340492191}
   - component: {fileID: 340492190}
-  - component: {fileID: 340492189}
   - component: {fileID: 340492188}
   m_Layer: 0
   m_Name: Queen
@@ -1218,33 +1217,12 @@ MonoBehaviour:
   cost: 1
   duration: 0
   PreConditions: []
-  PostConditions: []
+  PostConditions:
+  - key: GetFood
+    value: 0
   agentBeliefs:
     key: 
     value: 0
-  location: {fileID: 0}
-  inProgress: 0
---- !u!114 &340492189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340492187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5d527937ae71c14b872dafde03342dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ReleaseCollectors
-  actionName: Action
-  cost: 1
-  duration: 0
-  PreConditions: []
-  PostConditions: []
-  agentBeliefs:
-    key: 
-    value: 0
-  location: {fileID: 0}
   inProgress: 0
 --- !u!114 &340492190
 MonoBehaviour:
@@ -1266,7 +1244,6 @@ MonoBehaviour:
   agentBeliefs:
     key: 
     value: 0
-  location: {fileID: 0}
   inProgress: 0
 --- !u!114 &340492191
 MonoBehaviour:
@@ -1288,7 +1265,6 @@ MonoBehaviour:
   agentBeliefs:
     key: 
     value: 0
-  location: {fileID: 0}
   inProgress: 0
 --- !u!114 &340492192
 MonoBehaviour:
@@ -1304,6 +1280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Queen
   actions: []
   location: {fileID: 0}
+  UpdateDelay: 1
   currentAction: {fileID: 0}
 --- !u!4 &340492193
 Transform:
@@ -2007,7 +1984,7 @@ GameObject:
   - component: {fileID: 562540447}
   m_Layer: 0
   m_Name: AntSpawner
-  m_TagString: Untagged
+  m_TagString: AntSpawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4645,6 +4622,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeShop
   Upgrades:
   - {fileID: 11400000, guid: 1792bfcf486333f49beabeff5ff2c810, type: 2}
+  - {fileID: 11400000, guid: bc3e7338c17140c48808db4ea0bec945, type: 2}
   upgradeButtonUIObject: {fileID: 3124368694074212041, guid: b0584135d701dc04b87972facc8a0929, type: 3}
   upgradeMenuUI: {fileID: 963765947}
   mCam: {fileID: 91173229}
