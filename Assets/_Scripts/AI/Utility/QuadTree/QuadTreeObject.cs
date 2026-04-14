@@ -1,3 +1,4 @@
+using _Scripts.AI.Utility.QuadTree;
 using UnityEngine;
 
 public abstract class QuadTreeObject:MonoBehaviour

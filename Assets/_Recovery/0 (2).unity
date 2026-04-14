@@ -1279,7 +1279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Queen
   actions: []
-  UpdateDelay: 5
+  UpdateDelay: 1
   currentAction: {fileID: 0}
 --- !u!4 &340492193
 Transform:
